@@ -1,0 +1,7 @@
+main =>
+  R := count_moves(read_file_chars(), 0),
+  writeln(R).
+
+count_moves([], C) = C.
+count_moves(['('|XS], C) = count_moves(XS, C+1).
+count_moves([')'|XS], C) = count_moves(XS, C-1).
