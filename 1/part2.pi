@@ -1,0 +1,18 @@
+main => println(sum([extract(L) : L in read_file_lines(), L.len > 0])).
+
+extract(S) = R =>
+  S2 = replace_words(to_lowercase(S)),
+  Ds = [D : D in S2, D in "0123456789"],
+  R = parse_term([Ds[1], Ds[Ds.len]]).
+
+replace_words([]) = [].
+replace_words(Xs@[o,n,e|_]) = "1" ++ replace_words(tail(Xs)).
+replace_words(Xs@[t,w,o|_]) = "2" ++ replace_words(tail(Xs)).
+replace_words(Xs@[t,h,r,e,e|_]) = "3" ++ replace_words(tail(Xs)).
+replace_words(Xs@[f,o,u,r|_]) = "4" ++ replace_words(tail(Xs)).
+replace_words(Xs@[f,i,v,e|_]) = "5" ++ replace_words(tail(Xs)).
+replace_words(Xs@[s,i,x|_]) = "6" ++ replace_words(tail(Xs)).
+replace_words(Xs@[s,e,v,e,n|_]) = "7" ++ replace_words(tail(Xs)).
+replace_words(Xs@[e,i,g,h,t|_]) = "8" ++ replace_words(tail(Xs)).
+replace_words(Xs@[n,i,n,e|_]) = "9" ++ replace_words(tail(Xs)).
+replace_words([X|Xs]) = [X] ++ replace_words(Xs).

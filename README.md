@@ -18,7 +18,7 @@ My solutions for the [Advent of Code 2023](https://adventofcode.com/2023/) progr
 
 ## Retrospectives
 
-* Day 1: [???](https://github.com/DestyNova/advent_of_code_2023/blob/main/1)
+* Day 1: [Trebuchet?!](https://github.com/DestyNova/advent_of_code_2023/blob/main/1)
 * Day 2: [???](https://github.com/DestyNova/advent_of_code_2023/blob/main/2)
 * Day 3: [???](https://github.com/DestyNova/advent_of_code_2023/blob/main/3)
 * Day 4: [???](https://github.com/DestyNova/advent_of_code_2023/blob/main/4)

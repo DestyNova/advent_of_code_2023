@@ -1,7 +1,11 @@
 main =>
-  R := count_moves(read_file_chars(), 0),
+  R := sum(map(read_file_lines(),extract)),
   writeln(R).
 
-count_moves([], C) = C.
-count_moves(['('|XS], C) = count_moves(XS, C+1).
-count_moves([')'|XS], C) = count_moves(XS, C-1).
+sum_codes([], C) = C.
+sum_codes([S|XS], C) = sum_codes(XS, C + extract(S)).
+
+extract([]) = 0.
+extract(S) = R =>
+  Ds = [D : D in S, D in "0123456789"],
+  R = parse_term([Ds[1], Ds[Ds.len]]).
