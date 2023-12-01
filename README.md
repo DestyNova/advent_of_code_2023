@@ -1,19 +1,32 @@
 # 🎄 Advent of Code 2023 🎄
 
-My solutions for the [Advent of Code 2023](https://adventofcode.com/2023/) programming puzzles. I'll probably try these in a mix of [Nim](https://nim-lang.org), [Crystal](https://crystal-lang.org) and [Picat](http://www.picat-lang.org).
+My solutions for the [Advent of Code 2023](https://adventofcode.com/2023/) programming puzzles. I'll probably try these in a mix of [Nim](https://nim-lang.org), [Crystal](https://crystal-lang.org) and [Picat](http://www.picat-lang.org). If I can wrap my head around it and have time, maybe some Prolog or J as well.
 
 ## Previous challenges
 
 * [2015](https://github.com/DestyNova/advent_of_code_2015) (working on these now in Picat)
 * [2019](https://github.com/destynova/advent_of_code_2019) (unfinished, will resume later...)
-* [2020](https://github.com/destynova/advent_of_code_2020) (mostly Haskell, one or two in Rust, Python and [zz](https://github.com/zetzit/zz)
-* [2021](https://github.com/destynova/advent_of_code_2021) (mostly Haskell, with one in the magical [Picat](http://www.picat-lang.org)
+* [2020](https://github.com/destynova/advent_of_code_2020) (mostly Haskell, one or two in Rust, Python and [zz](https://github.com/zetzit/zz))
+* [2021](https://github.com/destynova/advent_of_code_2021) (mostly Haskell, with one in the magical [Picat](http://www.picat-lang.org))
 * [2022](https://github.com/destynova/advent_of_code_2022) (mostly Nim)
 
-## Current code stats with [cloc](https://github.com/AlDanial/cloc)
+## Current code stats with [scc](https://github.com/boyter/scc)
 
 ```
-(nothing yet)
+───────────────────────────────────────────────────────────────────────────────
+Language                 Files     Lines   Blanks  Comments     Code Complexity
+───────────────────────────────────────────────────────────────────────────────
+Markdown                     2        86       18         0       68          0
+Picat                        2        29        4         0       25          0
+───────────────────────────────────────────────────────────────────────────────
+Total                        4       115       22         0       93          0
+───────────────────────────────────────────────────────────────────────────────
+Estimated Cost to Develop (organic) $2,231
+Estimated Schedule Effort (organic) 1.35 months
+Estimated People Required (organic) 0.15
+───────────────────────────────────────────────────────────────────────────────
+Processed 7068 bytes, 0.007 megabytes (SI)
+───────────────────────────────────────────────────────────────────────────────
 ```
 
 ## Retrospectives
