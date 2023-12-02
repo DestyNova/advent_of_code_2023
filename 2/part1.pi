@@ -1,0 +1,20 @@
+import util.
+
+main =>
+  R := sum(map(read_file_lines(),extract)),
+  writeln(R).
+
+extract([]) = 0.
+extract(S) = R =>
+  [[G,a,m,e,' '|N],Cs] = S.split(":"),
+  Poss = [possible(Game) : Game in Cs.split(";")],
+  R = cond(fold(*,1,Poss) == 1, parse_term(N), 0).
+
+possible(Game) = R =>
+  Pieces = Game.split(",").map(strip),
+  M = new_map(),
+  foreach (P in Pieces)
+    [Count,Colour] = P.split(),
+    M.put(Colour, parse_term(Count))
+  end,
+  R = cond((M.get("red", 0) <= 12 && M.get("green", 0) <= 13 && M.get("blue", 0) <= 14), 1, 0).

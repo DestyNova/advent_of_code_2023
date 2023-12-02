@@ -16,23 +16,23 @@ My solutions for the [Advent of Code 2023](https://adventofcode.com/2023/) progr
 ───────────────────────────────────────────────────────────────────────────────
 Language                 Files     Lines   Blanks  Comments     Code Complexity
 ───────────────────────────────────────────────────────────────────────────────
-Markdown                     2        86       18         0       68          0
-Picat                        2        29        4         0       25          0
+Picat                        4        72       10         0       62          5
+Markdown                     3       118       27         0       91          0
 ───────────────────────────────────────────────────────────────────────────────
-Total                        4       115       22         0       93          0
+Total                        7       190       37         0      153          5
 ───────────────────────────────────────────────────────────────────────────────
-Estimated Cost to Develop (organic) $2,231
-Estimated Schedule Effort (organic) 1.35 months
-Estimated People Required (organic) 0.15
+Estimated Cost to Develop (organic) $3,762
+Estimated Schedule Effort (organic) 1.65 months
+Estimated People Required (organic) 0.20
 ───────────────────────────────────────────────────────────────────────────────
-Processed 7068 bytes, 0.007 megabytes (SI)
+Processed 10351 bytes, 0.010 megabytes (SI)
 ───────────────────────────────────────────────────────────────────────────────
 ```
 
 ## Retrospectives
 
 * Day 1: [Trebuchet?!](https://github.com/DestyNova/advent_of_code_2023/blob/main/1)
-* Day 2: [???](https://github.com/DestyNova/advent_of_code_2023/blob/main/2)
+* Day 2: [Cube Conundrum](https://github.com/DestyNova/advent_of_code_2023/blob/main/2)
 * Day 3: [???](https://github.com/DestyNova/advent_of_code_2023/blob/main/3)
 * Day 4: [???](https://github.com/DestyNova/advent_of_code_2023/blob/main/4)
 * Day 5: [???](https://github.com/DestyNova/advent_of_code_2023/blob/main/5)

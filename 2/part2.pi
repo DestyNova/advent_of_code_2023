@@ -1,0 +1,23 @@
+import util.
+
+main =>
+  R := sum(map(read_file_lines(),extract)),
+  writeln(R).
+
+extract([]) = 0.
+extract(S) = R =>
+  [[G,a,m,e,' '|N],Cs] = S.split(":"),
+  Required = [required(Game) : Game in Cs.split(";")],
+  Red = max([Game[1] : Game in Required]),
+  Green = max([Game[2] : Game in Required]),
+  Blue = max([Game[3] : Game in Required]),
+  R = Red*Green*Blue.
+
+required(Game) = R =>
+  Pieces = Game.split(",").map(strip),
+  M = new_map(),
+  foreach (P in Pieces)
+    [Count,Colour] = P.split(),
+    M.put(Colour, parse_term(Count))
+  end,
+  R = [M.get("red", 0), M.get("green", 0), M.get("blue", 0)].
