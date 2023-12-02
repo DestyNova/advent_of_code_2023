@@ -16,16 +16,16 @@ My solutions for the [Advent of Code 2023](https://adventofcode.com/2023/) progr
 ───────────────────────────────────────────────────────────────────────────────
 Language                 Files     Lines   Blanks  Comments     Code Complexity
 ───────────────────────────────────────────────────────────────────────────────
-Picat                        4        72       10         0       62          5
+Picat                        4        68        9         0       59          5
 Markdown                     3       118       27         0       91          0
 ───────────────────────────────────────────────────────────────────────────────
-Total                        7       190       37         0      153          5
+Total                        7       186       36         0      150          5
 ───────────────────────────────────────────────────────────────────────────────
-Estimated Cost to Develop (organic) $3,762
-Estimated Schedule Effort (organic) 1.65 months
+Estimated Cost to Develop (organic) $3,685
+Estimated Schedule Effort (organic) 1.64 months
 Estimated People Required (organic) 0.20
 ───────────────────────────────────────────────────────────────────────────────
-Processed 10351 bytes, 0.010 megabytes (SI)
+Processed 10273 bytes, 0.010 megabytes (SI)
 ───────────────────────────────────────────────────────────────────────────────
 ```
 

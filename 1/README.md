@@ -19,8 +19,8 @@ At first I thought this was simply invalid input, but then the spec didn't stric
 
 ```
 Benchmark 1: picat ./part1.pi < input
-  Time (mean ± σ):      20.4 ms ±   1.1 ms    [User: 9.9 ms, System: 10.5 ms]
-  Range (min … max):    18.4 ms …  25.2 ms    105 runs
+  Time (mean ± σ):      18.9 ms ±   0.8 ms    [User: 9.8 ms, System: 9.0 ms]
+  Range (min … max):    17.2 ms …  21.4 ms    136 runs
 ```
 
 ### Part 2

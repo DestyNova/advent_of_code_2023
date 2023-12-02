@@ -1,8 +1,7 @@
 main =>
-  R := sum(map(read_file_lines(),extract)),
+  R := sum([extract(L) : L in read_file_lines(), L \= ""]),
   writeln(R).
 
-extract([]) = 0.
 extract(S) = R =>
   Ds = [D : D in S, D in "0123456789"],
   R = parse_term([Ds[1], Ds[Ds.len]]).
