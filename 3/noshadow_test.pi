@@ -1,0 +1,7 @@
+main =>
+  X = "beep",
+
+  foreach ({X,Y} in [{1,2}])
+    println("hello")
+  end,
+  println("bye").

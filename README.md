@@ -33,7 +33,7 @@ Processed 10273 bytes, 0.010 megabytes (SI)
 
 * Day 1: [Trebuchet?!](https://github.com/DestyNova/advent_of_code_2023/blob/main/1)
 * Day 2: [Cube Conundrum](https://github.com/DestyNova/advent_of_code_2023/blob/main/2)
-* Day 3: [???](https://github.com/DestyNova/advent_of_code_2023/blob/main/3)
+* Day 3: [Gear Ratios](https://github.com/DestyNova/advent_of_code_2023/blob/main/3)
 * Day 4: [???](https://github.com/DestyNova/advent_of_code_2023/blob/main/4)
 * Day 5: [???](https://github.com/DestyNova/advent_of_code_2023/blob/main/5)
 * Day 6: [???](https://github.com/DestyNova/advent_of_code_2023/blob/main/6)

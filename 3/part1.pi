@@ -1,0 +1,37 @@
+import ordset.
+import util.
+
+main =>
+  G = read_file_lines(),
+  find_nums(G,1,[],Ns),
+  println(Ns.sum).
+
+find_nums(G,Row,Ns,R), Row > G.len =>
+  R = Ns.
+
+find_nums(G,Row,Ns,R) =>
+  Line = G[Row],
+  Nonsyms = new_ordset("0123456789."),
+  Buf = "",
+  IsPartNumber = false,
+
+  foreach (Col in 1..Line.len)
+    X = Line[Col],
+
+    if ascii_digit(X) then
+      Buf := [X|Buf],
+      Nearby = new_ordset([G[Row+J,Col+I] : J in [-1,0,1], I in [-1,0,1], [J,I] != [0,0], Row+J > 0, Row+J <= len(G), Col+I > 0, Col+I <= len(Line)]),
+      Nearby_syms = subtract(Nearby, Nonsyms),
+      if Nearby_syms.len > 0 then
+        IsPartNumber := true,
+      end,
+    end,
+    if not ascii_digit(X) || Col == Line.len then
+      if len(Buf) > 0 && IsPartNumber then
+        Ns := [parse_term(Buf.reverse)|Ns]
+      end,
+      Buf := "",
+      IsPartNumber := false
+    end,
+  end,
+  find_nums(G,Row+1,Ns,R).

@@ -1,0 +1,41 @@
+import ordset.
+import util.
+
+main =>
+  G = read_file_lines(),
+  find_nums(G,1,new_map(),Ns),
+  println(sum([A*B : [A,B] in Ns.values])).
+
+find_nums(G,Row,Ns,R), Row > G.len =>
+  R = Ns.
+
+find_nums(G,Row,Ns,R) =>
+  Line = G[Row],
+  Buf = "",
+  IsPartNumber = false,
+  Nearby = [],
+
+  % find number, check if adjacent to *, put * coords in map with list of adjacent numbers
+  foreach (Col in 1..Line.len)
+    X = Line[Col],
+
+    if ascii_digit(X) then
+      Buf := [X|Buf],
+      Nearby := Nearby ++ [{Col+I,Row+J} : J in [-1,0,1], I in [-1,0,1], [J,I] != [0,0], Row+J > 0, Row+J <= len(G), Col+I > 0, Col+I <= len(Line), G[Row+J,Col+I] == '*'],
+      if Nearby.len > 0 then
+        IsPartNumber := true,
+      end,
+    end,
+    if not ascii_digit(X) || Col == Line.len then
+      if len(Buf) > 0 && IsPartNumber then
+        N = parse_term(Buf.reverse),
+        foreach ({StarX,StarY} in Nearby.new_ordset)
+          Ns.put({StarX,StarY}, Ns.get({StarX,StarY}, []) ++ [N])
+        end,
+      end,
+      Buf := "",
+      IsPartNumber := false,
+      Nearby := []
+    end,
+  end,
+  find_nums(G,Row+1,Ns,R).
