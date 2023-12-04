@@ -1,0 +1,13 @@
+import ordset.
+import util.
+
+main => println(sum(map(read_file_lines(),extract))).
+
+extract([]) = 0.
+extract(S) = R =>
+  [[C,a,r,d,' '|N],Rs] = S.split(":"),
+  [WinS,MineS] = Rs.split("|"),
+  Winning = new_ordset(WinS.split.map(parse_term)),
+  Mine = new_ordset(MineS.split.map(parse_term)),
+  Matches = intersection(Winning,Mine).len,
+  R = cond(Matches == 0, 0, 2 ** (Matches - 1)).

@@ -1,0 +1,25 @@
+import ordset.
+import util.
+
+main =>
+  M = new_map(),
+  _ = [0 : L in read_file_lines(), extract(L,M)],
+  println(M.values.sum).
+
+extract([],_) => true.
+extract(S,M) =>
+  [[C,a,r,d,' '|Nt],Rs] = S.split(":"),
+  N = Nt.parse_term(),
+  Copies = M.get(N,0),
+  if Copies == 0 then
+    M.put(N,1),
+    Copies := 1
+  end,
+
+  [WinS,MineS] = Rs.split("|"),
+  Winning = new_ordset(WinS.split.map(parse_term)),
+  Mine = new_ordset(MineS.split.map(parse_term)),
+  Matches = intersection(Winning,Mine).len,
+  foreach (I in N+1 .. N+Matches)
+    M.put(I, M.get(I,1)+Copies),
+  end.
