@@ -1,0 +1,68 @@
+import util.
+import sat.
+
+main =>
+  M = new_map(),
+  extract(read_file_lines(), M, false),
+
+  Ranges = chunks_of(M.get("seeds"),2),
+  Num_ranges = Ranges.len,
+
+  printf("ranges: %w, num: %d\n", Ranges, Num_ranges),
+  Seeds = [],
+  Locs = [],
+
+  Min = 2**34,
+  foreach ([Start,Len] in Ranges)
+    Seed :: 1..2**34,
+    Seed #>= Start,
+    Seed #< Start+Len,
+    Loc :: 1..2**34,
+    printf("Solving %w %w...\n", Start, Len),
+    lookup(Seed,"seed",M,Loc),
+    solve([$min(Loc),$report(printf("Best so far: %d\n",Loc))],[Seed,Loc]),
+    printf("Seed: %w, location: %w\n", Seed, Loc),
+    if Loc < Min then
+      Min := Loc
+    end,
+    Seeds := [Seed|Seeds],
+    Locs := [Loc|Locs],
+  end,
+  println(zip(Seeds,Locs).reverse),
+  println(min=Min).
+
+lookup(N,"location",M,R) =>
+  N #= R.
+
+lookup(N,Src,M,R) =>
+  {Dest,Mappings} = M.get(Src),
+
+  Ds = new_list(Mappings.len),
+  I = 1,
+  foreach ([Dstart,Sstart,L] in Mappings)
+    Ds[I] #= cond(Sstart #<= N #/\ Sstart+L #> N, N + Dstart - Sstart, 0),
+    I := I + 1,
+  end,
+
+  D :: 0..2**34,
+  D #= cond(max(Ds) #= 0, N, max(Ds)),
+  lookup(D,Dest,M,R).
+
+extract([],M,_).
+extract([[]|Rest],M,CurrentMap) :-
+  extract(Rest,M,CurrentMap).
+
+extract([[s,e,e,d,s,':',' '|Xs]|Rest],M,_) :-
+  M.put("seeds", Xs.split.map(parse_term)),
+  extract(Rest,M,false).
+
+extract([S|Rest],M,_) :-
+  membchk(':',S),
+  [X|_] = S.split,
+  [Src,_,Dest] = X.split("-"),
+  extract(Rest,M,{Src,Dest}).
+
+extract([S|Rest],M,{Src,Dest}) :-
+  {_,Ranges} = M.get(Src,{Dest,[]}),
+  M.put(Src, {Dest,[S.split.map(parse_term)|Ranges]}),
+  extract(Rest,M,{Src,Dest}).
