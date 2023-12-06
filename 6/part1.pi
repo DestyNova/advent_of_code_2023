@@ -1,0 +1,24 @@
+import util.
+
+main =>
+  [[T,i,m,e,':'|TimeL],[D,i,s,t,a,n,c,e,':'|DistanceL]|_] = read_file_lines(),
+  println({TimeL.split(),DistanceL}),
+  Times = TimeL.split.map(parse_term),
+  Distances = DistanceL.split.map(parse_term),
+  println(times=Times),
+  println(distances=Distances),
+  R = fold(*,1,map(zip(Times,Distances),extract)),
+  writeln(R).
+
+extract({Time,Distance}) = R =>
+  println({Time,Distance}),
+  Possibilities = 0,
+  foreach (I in 1..(Time-1))
+    ReleaseDistance = I*(Time-I),
+    if ReleaseDistance > Distance then
+      Possibilities := Possibilities + 1,
+    end,
+    printf("hold for %d ms, release distance %d, possibilities: %d\n", I, ReleaseDistance, Possibilities),
+  end,
+  R = Possibilities,
+  println({Time,Distance,R}).

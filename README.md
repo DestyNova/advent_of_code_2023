@@ -16,12 +16,12 @@ My solutions for the [Advent of Code 2023](https://adventofcode.com/2023/) progr
 ───────────────────────────────────────────────────────────────────────────────
 Language                     Files       Lines     Blanks    Comments      Code
 ───────────────────────────────────────────────────────────────────────────────
-Picat                           11         300         45           1       254
-Markdown                         6         230         68           0       162
+Picat                           13         338         49           1       288
+Markdown                         7         263         79           0       184
 ───────────────────────────────────────────────────────────────────────────────
-Total                           17         530        113           1       416
+Total                           20         601        128           1       472
 ───────────────────────────────────────────────────────────────────────────────
-Processed 23381 bytes, 0.023 megabytes (SI)
+Processed 26685 bytes, 0.027 megabytes (SI)
 ───────────────────────────────────────────────────────────────────────────────
 ```
 
@@ -32,7 +32,7 @@ Processed 23381 bytes, 0.023 megabytes (SI)
 * Day 3: [Gear Ratios](https://github.com/DestyNova/advent_of_code_2023/blob/main/3)
 * Day 4: [Scratchcards](https://github.com/DestyNova/advent_of_code_2023/blob/main/4)
 * Day 5: [If You Give A Seed A Fertilizer](https://github.com/DestyNova/advent_of_code_2023/blob/main/5)
-* Day 6: [???](https://github.com/DestyNova/advent_of_code_2023/blob/main/6)
+* Day 6: [Wait For It](https://github.com/DestyNova/advent_of_code_2023/blob/main/6)
 * Day 7: [???](https://github.com/DestyNova/advent_of_code_2023/blob/main/7)
 * Day 8: [???](https://github.com/DestyNova/advent_of_code_2023/blob/main/8)
 * Day 9: [???](https://github.com/DestyNova/advent_of_code_2023/blob/main/9)

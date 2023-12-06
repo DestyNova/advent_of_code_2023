@@ -1,0 +1,15 @@
+import util.
+
+main =>
+  [TimeL,DistanceL|_] = read_file_lines(),
+  Time = [C : C in TimeL, C.ascii_digit].parse_term,
+  Distance = [C : C in DistanceL, C.ascii_digit].parse_term,
+
+  Possibilities = 0,
+  foreach (I in 1..(Time-1))
+    ReleaseDistance = I*(Time-I),            % inline this to make the program 50% slower
+    if ReleaseDistance > Distance then
+      Possibilities := Possibilities + 1,
+    end,
+  end,
+  println(Possibilities).

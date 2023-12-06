@@ -1,4 +1,4 @@
-# Day 5: [If You Give A Seed A Fertilizer](https://adventofcode.com/2023/day/2)
+# Day 5: [If You Give A Seed A Fertilizer](https://adventofcode.com/2023/day/5)
 *Picat: [Part 1](https://github.com/DestyNova/advent_of_code_2023/blob/main/5/part1.pi) (00:52:17, rank 6717), [Part 2](https://github.com/DestyNova/advent_of_code_2023/blob/main/5/part2.pi) (03:20:27, rank 7231)*
 
 ## Part 1
@@ -14,6 +14,8 @@ Instead, I set about converting the problem to a constraint puzzle. It had been 
 After a **long** time messing about, I changed the loop to just run the solver once on each seed range, solving for the minimum and keeping track of the best we've seen among all seed ranges so far. That produced the correct result in about a minute, and playing with various solver options (including the new maxsat interface and various compatible solvers) reduced this to around 35 seconds with the built-in `sat` module with the default options. Quite impressive!
 
 The `smt` module also succeeds with either `z3` or `cvc4` but **much** slower than the in-built SAT solver (or external maxsat interfaces which are about the same as the internal solver).
+
+**Update 22:32:** Okay, before I head to bed in preparation for the next puzzle in... 6 hours... I tried another maxsat solver called [Loandra](https://github.com/jezberg/loandra). I ran into a build error which the maintainer fixed almost immediately, and Loandra produced the quickest (correct) result I've seen so far, in 28.853 seconds. Very cool indeed.
 
 ## Thoughts
 
