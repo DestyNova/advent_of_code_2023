@@ -2,9 +2,8 @@ import util.
 
 main =>
   M = new_map(),
-  _ = extract(read_file_lines(), M, false),
-  R = min([lookup(Seed,"seed",M) : Seed in M.get("seeds")]),
-  writeln(R).
+  extract(read_file_lines(), M, false),
+  println(min([lookup(Seed,"seed",M) : Seed in M.get("seeds")])).
 
 lookup(N,"location",M) = N.
 
@@ -19,22 +18,19 @@ lookup(N,Src,M) = R =>
   end,
   R = cond(Found == false, lookup(N,Dest,M),Found).
 
-extract([],M,_) = R =>
-  R = true.
-
-extract([""|Rest],M,CurrentMap) = R =>
-  R = extract(Rest,M,CurrentMap).
-
-extract([[s,e,e,d,s,':',' '|Xs]|Rest],M,_) = R =>
+extract([],M,_).
+extract([""|Rest],M,CurrentMap) :- extract(Rest,M,CurrentMap).
+extract([[s,e,e,d,s,':',' '|Xs]|Rest],M,_) :-
   M.put("seeds", Xs.split.map(parse_term)),
-  R = extract(Rest,M,false).
+  extract(Rest,M,false).
 
-extract([S|Rest],M,_) = R, membchk(':',S) =>
+extract([S|Rest],M,_) :-
+  membchk(':',S),
   [X|_] = S.split,
   [Src,_,Dest] = X.split("-"),
-  R = extract(Rest,M,{Src,Dest}).
+  extract(Rest,M,{Src,Dest}).
 
-extract([S|Rest],M,{Src,Dest}) = R =>
+extract([S|Rest],M,{Src,Dest}) :-
   {_,Ranges} = M.get(Src,{Dest,[]}),
   M.put(Src, {Dest,[S.split.map(parse_term)|Ranges]}),
-  R = extract(Rest,M,{Src,Dest}).
+  extract(Rest,M,{Src,Dest}).

@@ -6,8 +6,7 @@ main =>
   find_nums(G,1,[],Ns),
   println(Ns.sum).
 
-find_nums(G,Row,Ns,R), Row > G.len =>
-  R = Ns.
+find_nums(G,Row,Ns,R), Row > G.len => R = Ns.
 
 find_nums(G,Row,Ns,R) =>
   Line = G[Row],

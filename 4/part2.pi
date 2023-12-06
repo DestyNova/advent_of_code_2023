@@ -6,8 +6,8 @@ main =>
   _ = [0 : L in read_file_lines(), extract(L,M)],
   println(M.values.sum).
 
-extract([],_) => true.
-extract(S,M) =>
+extract([],_).
+extract(S,M) :-
   [[C,a,r,d,' '|Nt],Rs] = S.split(":"),
   N = Nt.parse_term(),
   Copies = M.get(N,0),

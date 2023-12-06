@@ -6,8 +6,7 @@ main =>
   find_nums(G,1,new_map(),Ns),
   println(sum([A*B : [A,B] in Ns.values])).
 
-find_nums(G,Row,Ns,R), Row > G.len =>
-  R = Ns.
+find_nums(G,Row,Ns,R), Row > G.len => R = Ns.
 
 find_nums(G,Row,Ns,R) =>
   Line = G[Row],

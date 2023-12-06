@@ -1,8 +1,6 @@
 import util.
 
-main =>
-  R := sum(map(read_file_lines(),extract)),
-  writeln(R).
+main => println(sum(map(read_file_lines(),extract))).
 
 extract([]) = 0.
 extract(S) = R =>
