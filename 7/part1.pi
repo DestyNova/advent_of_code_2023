@@ -1,0 +1,48 @@
+import util.
+
+main =>
+  M=new_map(['A'=13, 'K'=12, 'Q'=11, 'J'=10, 'T'=9, '9'=8, '8'=7, '7'=6, '6'=5, '5'=4, '4'=3, '3'=2, '2'=1]),
+  Hands = extract(read_file_lines(),M),
+
+  Sorted = bubble_sort(Hands,M),
+  println(sum([Bet*Rank : {Rank,{_,Bet}} in zip(1..len(Sorted), Sorted)])).
+
+bubble_sort(Hands,M) = R =>
+  Swapped = false,
+
+  foreach (I in 1..Hands.len-1)
+    {A,A_bet} = Hands[I],
+    {B,B_bet} = Hands[I+1],
+
+    A_type = get_type(A.sort),
+    B_type = get_type(B.sort),
+
+    if A_type > B_type || (A_type == B_type && tie_break(A,B)) then
+      Hands[I] := {B,B_bet},
+      Hands[I+1] := {A,A_bet},
+      Swapped := true,
+    end,
+  end,
+
+  R = cond(Swapped, bubble_sort(Hands,M), Hands).
+
+tie_break([X|_],[Y|_]) :- X>Y.
+tie_break([X|Xs],[Y|Ys]) :- X==Y, tie_break(Xs,Ys).
+
+get_type([A,A,A,A,A]) = 7.
+get_type([A,A,A,A,_]) = 6.
+get_type([_,A,A,A,A]) = 6.
+get_type([A,A,A,B,B]) = 5.
+get_type([B,B,A,A,A]) = 5.
+get_type([A,A,A,_,_]) = 4.
+get_type([_,A,A,A,_]) = 4.
+get_type([_,_,A,A,A]) = 4.
+get_type([A,A,B,B,_]) = 3.
+get_type([_,A,A,B,B]) = 3.
+get_type([A,A,_,B,B]) = 3.
+get_type(Xs) = cond(Xs.new_set.size == 4, 2, 1).
+
+extract([],M) = [].
+extract([S|Xs],M) = R =>
+  [Hand,Bet] = S.split,
+  R = [{[M.get(C) : C in Hand],Bet.parse_term()}|extract(Xs,M)].

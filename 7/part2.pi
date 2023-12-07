@@ -1,0 +1,52 @@
+import util.
+
+main =>
+  M=new_map(['A'=13, 'K'=12, 'Q'=11, 'J'=0, 'T'=9, '9'=8, '8'=7, '7'=6, '6'=5, '5'=4, '4'=3, '3'=2, '2'=1]),
+  Hands = extract(read_file_lines(),M),
+
+  Sorted = bubble_sort(Hands,M),  % bubble sort is best sort. No sort_by_comparator in Picat
+  println(sum([Bet*Rank : {Rank,{_,Bet}} in zip(1..len(Sorted), Sorted)])).
+
+bubble_sort(Hands,M) = R =>
+  Swapped = false,
+
+  foreach (I in 1..Hands.len-1)
+    {A,A_bet} = Hands[I],
+    {B,B_bet} = Hands[I+1],
+
+    A_lengths = lengths(A),
+    B_lengths = lengths(B),
+    A_type = get_type(A_lengths, [1 : C in A.sort, C == 0].len),
+    B_type = get_type(B_lengths, [1 : C in B.sort, C == 0].len),
+
+    if A_type > B_type || (A_type == B_type && tie_break(A,B)) then
+      Hands[I] := {B,B_bet},
+      Hands[I+1] := {A,A_bet},
+      Swapped := true,
+    end,
+  end,
+  R = cond(Swapped, bubble_sort(Hands,M), Hands).
+
+lengths(Xs) = R =>
+  Counts = new_map(),
+  foreach (X in Xs, X != 0)
+    Counts.put(X, Counts.get(X,0) + 1)
+  end,
+  R = Counts.values.sort_down.
+
+tie_break([X|_],[Y|_]) :- X>Y.
+tie_break([X|Xs],[Y|Ys]) :- X==Y, tie_break(Xs,Ys).
+
+get_type([],5) = 7.
+get_type([X|_],Js) = R, X+Js == 5 => R = 7.
+get_type([X|_],Js) = R, X+Js == 4 => R = 6.
+get_type([X,Y|_],Js) = R, ((X+Js == 3 && Y == 2) || (X == 3 && Y+Js == 2)) => R = 5.
+get_type([X|_],Js) = R, X+Js == 3 => R = 4.
+get_type([X,Y|_],Js) = R, ((X+Js == 2 && Y == 2) || (X == 2 && Y+Js == 2)) => R = 3.
+get_type([X|_],Js) = R, X+Js == 2 => R = 2.
+get_type(Xs,0) = 1.
+
+extract([],M) = [].
+extract([S|Xs],M) = R =>
+  [Hand,Bet] = S.split,
+  R = [{[M.get(C) : C in Hand], Bet.parse_term()} | extract(Xs,M)].

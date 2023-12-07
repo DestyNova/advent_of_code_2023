@@ -16,13 +16,12 @@ My solutions for the [Advent of Code 2023](https://adventofcode.com/2023/) progr
 ───────────────────────────────────────────────────────────────────────────────
 Language                     Files       Lines     Blanks    Comments      Code
 ───────────────────────────────────────────────────────────────────────────────
-Picat                           13         319         46           1       272
-Markdown                         7         262         79           0       183
-Solidity                         1           6          0           0         6
+Picat                           15         419         66           1       352
+Markdown                         8         309         95           0       214
 ───────────────────────────────────────────────────────────────────────────────
-Total                           21         587        125           1       461
+Total                           23         728        161           1       566
 ───────────────────────────────────────────────────────────────────────────────
-Processed 57721 bytes, 0.058 megabytes (SI)
+Processed 31730 bytes, 0.032 megabytes (SI)
 ───────────────────────────────────────────────────────────────────────────────
 ```
 
@@ -34,7 +33,7 @@ Processed 57721 bytes, 0.058 megabytes (SI)
 * Day 4: [Scratchcards](https://github.com/DestyNova/advent_of_code_2023/blob/main/4)
 * Day 5: [If You Give A Seed A Fertilizer](https://github.com/DestyNova/advent_of_code_2023/blob/main/5)
 * Day 6: [Wait For It](https://github.com/DestyNova/advent_of_code_2023/blob/main/6)
-* Day 7: [???](https://github.com/DestyNova/advent_of_code_2023/blob/main/7)
+* Day 7: [Camel Cards](https://github.com/DestyNova/advent_of_code_2023/blob/main/7)
 * Day 8: [???](https://github.com/DestyNova/advent_of_code_2023/blob/main/8)
 * Day 9: [???](https://github.com/DestyNova/advent_of_code_2023/blob/main/9)
 * Day 10: [???](https://github.com/DestyNova/advent_of_code_2023/blob/main/10)
