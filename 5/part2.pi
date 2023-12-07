@@ -21,7 +21,7 @@ main =>
     Loc :: 1..2**34,
     printf("Solving range %d/%d: %w %w...\n", I, Num_ranges, Start, Len),
     lookup(Seed,"seed",M,Loc),
-    solve([seq,$min(Loc),$report(printf("Best so far: %d\n",Loc))],[Seed,Loc]),
+    solve([maxsat,split,$min(Loc),$report(printf("Best so far: %d\n",Loc))],[Seed,Loc]),
     printf("Seed: %w, location: %w\n", Seed, Loc),
     if Loc < Min then
       Min := Loc

@@ -15,7 +15,7 @@ After a **long** time messing about, I changed the loop to just run the solver o
 
 The `smt` module also succeeds with either `z3` or `cvc4` but **much** slower than the in-built SAT solver (or external maxsat interfaces which are about the same as the internal solver).
 
-**Update 22:32:** Okay, before I head to bed in preparation for the next puzzle in... 6 hours... I tried another maxsat solver called [Loandra](https://github.com/jezberg/loandra). I ran into a build error which the maintainer fixed almost immediately, and Loandra produced the quickest (correct) result I've seen so far, in 28.853 seconds. Very cool indeed.
+**Update 22:32:** Okay, before I head to bed in preparation for the next puzzle in... 6 hours... I tried another maxsat solver called [CGSS2](https://bitbucket.org/coreo-group/cgss2). I ran into a build error which the maintainer fixed almost immediately, and CGSS2 produced the quickest (correct) result I've seen so far, in 28.853 seconds. Very cool indeed.
 
 ## Thoughts
 
@@ -39,4 +39,12 @@ Benchmark 1: picat ./part1.pi < input
 
 ### Part 2
 
-Nah, too slow for that.
+Nah, too slow for that, but rough timings are:
+
+* ~35s with Picat's built-in SAT solver, defaulting to `split` strategy
+* ~35s with the `seq` strategy
+* 28.5953s with `maxsat`, where a symlink of that name somewhere in my `$PATH` points to the [CGSS2 solver](https://bitbucket.org/coreo-group/cgss2)
+* >5m30s (cancelled at about 20%) with z3
+* 32.11s with the `CASHWMAXSAT-CorePlus-m` solver and `seq`, and 31.58s with `split`
+* 28.4s with [maxino](https://maxsat-evaluations.github.io/2017/mse17-solver-src/complete/maxino.zip) (2017 version)
+* 31.9 with [WMaxCDCL](https://maxsat-evaluations.github.io/2023/mse23-solver-src/exact/WMaxCDCL.zip)
