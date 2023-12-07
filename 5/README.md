@@ -21,11 +21,30 @@ The `smt` module also succeeds with either `z3` or `cvc4` but **much** slower th
 
 Once again, Picat's built-in SAT solver is magic. The program I ended up with after some tidying up looks relatively clean, but formulating it correctly took several hours with really confusing results, including negative values when using `cp`, (which I thought would be impossible). A lot of the time, doing something wrong will produce a nondescript error like `*** error(failed,main/0)` with no clues about where the flow of execution was, no stacktrace or line numbers even.
 
-Invariably I ended up with code full of `println(ok1), ....., println(ok2)` to see where something goes wrong. Perhaps this is unavoidable in Prolog-flavoured languages, but it can lead to being stuck for quite a while.
+Another example is adding this line (it was necessary to get anywhere with the MIP solvers):
+
+```picat
+    Ds[I] #>= 0,
+    Ds[I] mod 1 #= 0,
+```
+
+If the `mod` line is left in when using the `sat` solver module, the program crashes with:
+
+```
+*** error(syntax_error,parse_term([m,a,p,:]))
+```
+
+Again, no stacktrace or line numbers to give any clue as to what specifically the problem was. `cp` doesn't seem to care since it handles constraints very differently. Using the `smt` module does provide a clue:
+
+```
+*** error(unknown_constraint,$mod_constr(_230,1,_238,0,[arith_constr(ge,-1,[(-1,0),(1,1)]),$mul_constr(1,_238,_2f0),arith_constr(eq,0,[(-1,_230),(1,_2f0),(1,0)])]))
+```
+
+But... well you get the idea. Invariably I ended up manually bisecting the code with `println(ok1), ....., println(ok2)` to see where something goes wrong. Perhaps this is unavoidable in Prolog-flavoured languages, but it can lead to being stuck for quite a while.
 
 Also it's often hard to reason about what the constraint solver expects and why your program isn't working. For a while I was stuck just trying to express that a domain variable `D` should exist which is an element of an array of domain vars `Ds`. This just did not seem to work at all -- the `::` operator refused to accept it, and the closest I got was `element(I,Ds,D), I :: 1..Ds.len`.
 
-I'm sure that more regular practice with these problems, I can eventually become comfortable with translating complex problems into the constraint language. It's taking a while though.
+I'm sure that with more regular practice with these problems, I can eventually become comfortable with translating complex problems into the constraint language. It's taking a while though.
 
 ## Timings (with hyperfine)
 
@@ -39,7 +58,7 @@ Benchmark 1: picat ./part1.pi < input
 
 ### Part 2
 
-Nah, too slow for that, but rough timings are:
+Nah, too slow for that, but rough timings of the original version are:
 
 * ~35s with Picat's built-in SAT solver, defaulting to `split` strategy
 * ~35s with the `seq` strategy
@@ -48,3 +67,9 @@ Nah, too slow for that, but rough timings are:
 * 32.11s with the `CASHWMAXSAT-CorePlus-m` solver and `seq`, and 31.58s with `split`
 * 28.4s with [maxino](https://maxsat-evaluations.github.io/2017/mse17-solver-src/complete/maxino.zip) (2017 version)
 * 31.9 with [WMaxCDCL](https://maxsat-evaluations.github.io/2023/mse23-solver-src/exact/WMaxCDCL.zip)
+
+With some optimisations suggested by [Hakan Kjellerstrand](http://hakank.org), the time came down to:
+
+* 20.534s with the `maxino` maxsat solver
+* 27.777s with the built-in `sat` module and the default solver options
+* 28.058s with `sat` and the `seq` strategy
