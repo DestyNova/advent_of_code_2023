@@ -1,0 +1,34 @@
+import util.
+
+main =>
+  G=new_map(),
+  [Moves,_|GraphS] = read_file_lines(),
+  extract(GraphS,G),
+  println({Moves,G}),
+
+  Starts = [Node : Node in G.keys, Node = [_,_,'A']],
+  Count = proceed(Starts, Moves, Moves, G, 0),
+  println(Count).
+
+proceed(Here, _, _, _, Count) = R, all_terminal(Here) => R = Count.
+%proceed(Here, _, _, _, Count) = R, Count > 10 => R = Count.
+proceed(Here, [], Moves, G, Count) = proceed(Here, Moves, Moves, G, Count).
+proceed(Here, ['L'|Steps], Moves, G, Count) = R =>
+  %println({Here,Steps,Count}),
+  Options = [Option[1] : H in Here, Option = G.get(H)],
+  R = proceed(Options, Steps, Moves, G, Count + 1).
+proceed(Here, ['R'|Steps], Moves, G, Count) = R =>
+  %println({Here,Steps,Count}),
+  Options = [Option[2] : H in Here, Option = G.get(H)],
+  R = proceed(Options, Steps, Moves, G, Count + 1).
+
+all_terminal([]).
+all_terminal([[_,_,'Z']|Rest]) :- all_terminal(Rest).
+
+extract([],M).
+extract([""|Xs],M) :-
+  extract(Xs,M).
+extract([S|Xs],M) :-
+  [Here,L,R] = S.split(" =(,)"),
+  M.put(Here, {L,R}),
+  extract(Xs,M).

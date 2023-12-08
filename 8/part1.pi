@@ -1,0 +1,24 @@
+import util.
+
+main =>
+  G=new_map(),
+  [Moves,_|GraphS] = read_file_lines(),
+  extract(GraphS,G),
+  println({Moves,G}),
+
+  Count = proceed("AAA", Moves, Moves, G, 0),
+  println(Count).
+
+proceed("ZZZ", _, _, _, Count) = Count.
+proceed(Here, [], Moves, G, Count) = proceed(Here, Moves, Moves, G, Count).
+proceed(Here, ['L'|Steps], Moves, G, Count) = R, Options = G.get(Here) => R = proceed(Options[1], Steps, Moves, G, Count + 1).
+proceed(Here, ['R'|Steps], Moves, G, Count) = R, Options = G.get(Here) => R = proceed(Options[2], Steps, Moves, G, Count + 1).
+
+
+extract([],M).
+extract([""|Xs],M) :-
+  extract(Xs,M).
+extract([S|Xs],M) :-
+  [Here,L,R] = S.split(" =(,)"),
+  M.put(Here, {L,R}),
+  extract(Xs,M).
