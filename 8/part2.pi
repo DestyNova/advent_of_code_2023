@@ -4,26 +4,18 @@ main =>
   G=new_map(),
   [Moves,_|GraphS] = read_file_lines(),
   extract(GraphS,G),
-  println({Moves,G}),
 
   Starts = [Node : Node in G.keys, Node = [_,_,'A']],
-  Count = proceed(Starts, Moves, Moves, G, 0),
-  println(Count).
+  Counts = [proceed(Start, Moves, Moves, G, 0) : Start in Starts],
+  println(lcm(Counts)).
 
-proceed(Here, _, _, _, Count) = R, all_terminal(Here) => R = Count.
-%proceed(Here, _, _, _, Count) = R, Count > 10 => R = Count.
+lcm([A]) = A.
+lcm([A,B|Xs]) = lcm([A*B // gcd(A,B) | Xs]).
+
+proceed([_,_,'Z'], _, _, _, Count) = Count.
 proceed(Here, [], Moves, G, Count) = proceed(Here, Moves, Moves, G, Count).
-proceed(Here, ['L'|Steps], Moves, G, Count) = R =>
-  %println({Here,Steps,Count}),
-  Options = [Option[1] : H in Here, Option = G.get(H)],
-  R = proceed(Options, Steps, Moves, G, Count + 1).
-proceed(Here, ['R'|Steps], Moves, G, Count) = R =>
-  %println({Here,Steps,Count}),
-  Options = [Option[2] : H in Here, Option = G.get(H)],
-  R = proceed(Options, Steps, Moves, G, Count + 1).
-
-all_terminal([]).
-all_terminal([[_,_,'Z']|Rest]) :- all_terminal(Rest).
+proceed(Here, ['L'|Steps], Moves, G, Count) = R, Options = G.get(Here) => R = proceed(Options[1], Steps, Moves, G, Count + 1).
+proceed(Here, ['R'|Steps], Moves, G, Count) = R, Options = G.get(Here) => R = proceed(Options[2], Steps, Moves, G, Count + 1).
 
 extract([],M).
 extract([""|Xs],M) :-
