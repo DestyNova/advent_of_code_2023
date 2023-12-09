@@ -23,14 +23,14 @@ After reading the part 2 problem description, it immediately occurred to me that
 
 ```
 Benchmark 1: picat part1.pi < input
-  Time (mean ± σ):      34.1 ms ±   1.0 ms    [User: 23.6 ms, System: 10.4 ms]
-  Range (min … max):    32.6 ms …  37.9 ms    72 runs
+  Time (mean ± σ):      31.9 ms ±   0.7 ms    [User: 21.0 ms, System: 10.8 ms]
+  Range (min … max):    30.5 ms …  33.6 ms    84 runs
 ```
 
 ### Part 2
 
 ```
 Benchmark 1: picat part2.pi < input
-  Time (mean ± σ):      32.4 ms ±   1.4 ms    [User: 22.1 ms, System: 10.1 ms]
-  Range (min … max):    30.5 ms …  39.4 ms    80 runs
+  Time (mean ± σ):      31.9 ms ±   0.7 ms    [User: 21.3 ms, System: 10.6 ms]
+  Range (min … max):    30.7 ms …  34.6 ms    78 runs
 ```

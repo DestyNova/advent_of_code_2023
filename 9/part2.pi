@@ -1,18 +1,13 @@
 import util.
 
-main =>
-  Res = read_file_lines().map(process),
-  println(sum(Res)).
+main => read_file_lines().map(process).sum.println.
 
 process(S) = R =>
   Ns = S.split().map(parse_term).reverse(),
   extrapolate(Ns,Diff),
   R = Ns[Ns.len] + Diff.
 
-extrapolate(Ns,R) :-
-  Ns.new_set().keys == [0],
-  R = 0.
-
+extrapolate(Ns,0) :- Ns.new_set().keys == [0].
 extrapolate(Ns,R) :-
   Diffs = [B-A : {A,B} in zip(Ns, Ns.tail)],
   extrapolate(Diffs, Next),
