@@ -4,11 +4,11 @@ main => read_file_lines().map(process).sum.println.
 
 process(S) = R =>
   Ns = S.split().map(parse_term),
-  extrapolate(Ns,Diff),
-  R = Ns[Ns.len] + Diff.
+  extrapolate(Ns, Diff),
+  R = Ns.last + Diff.
 
-extrapolate(Ns,0) :- Ns.new_set().keys == [0].
-extrapolate(Ns,R) :-
+extrapolate(Ns, 0) :- Ns.new_set().keys == [0].
+extrapolate(Ns, R) :-
   Diffs = [B-A : {A,B} in zip(Ns, Ns.tail)],
   extrapolate(Diffs, Next),
-  R = Diffs[Diffs.len] + Next.
+  R = Diffs.last + Next.
