@@ -1,7 +1,7 @@
 import util.
 
 main =>
-  G=new_map(),
+  G = new_map(),
   [Moves,_|GraphS] = read_file_lines(),
   extract(GraphS,G),
 
@@ -18,8 +18,7 @@ proceed(Here, ['L'|Steps], Moves, G, Count) = R, Options = G.get(Here) => R = pr
 proceed(Here, ['R'|Steps], Moves, G, Count) = R, Options = G.get(Here) => R = proceed(Options[2], Steps, Moves, G, Count + 1).
 
 extract([],M).
-extract([""|Xs],M) :-
-  extract(Xs,M).
+extract([""|Xs],M) :- extract(Xs,M).
 extract([S|Xs],M) :-
   [Here,L,R] = S.split(" =(,)"),
   M.put(Here, {L,R}),
