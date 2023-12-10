@@ -10,14 +10,14 @@ main =>
   Inside = 0,
   foreach (J in 2..G.len)
     foreach(I in 2..G[1].len, not(Seen.has_key({I,J})))
-      Crossed = 0,
+      Crossed = false,
 
       foreach (X in 1..I)      % ray cast horizontally from X=1 towards this cell
         if Seen.has_key({X,J}) && membchk(G[J,X], "|LJ") then
-          Crossed := Crossed + 1,
+          Crossed := not(Crossed)
         end,
       end,
-      if Crossed mod 2 == 1 then
+      if Crossed then
         Inside := Inside + 1
       end
     end
