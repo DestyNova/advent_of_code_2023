@@ -35,8 +35,6 @@ bfs(G, Seen, [{X,Y,Count}|Xs]) :-
   Xs2 = Xs ++ [{X2,Y2,Count+1} : {X2,Y2} in Moves],
   bfs(G, Seen, Xs2).
 
-in_bounds(G,X,Y) :- X >= 1, X <= G[1].len, Y >= 1, Y <= G.len.
-
 moves(G, X, Y) = [{X+I,Y+J} : Dir in [down,up,left,right], from(Dir,G,X,Y), goes(Dir,G,X,Y), {I,J} = offset(Dir)].
 
 offset(down) = {0,1}.
