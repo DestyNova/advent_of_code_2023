@@ -1,0 +1,69 @@
+import util.
+
+main =>
+  G = read_file_lines(),
+  extract(G,StartX,StartY),
+
+  Seen = new_map(),
+  proceed(G, Seen, [{StartX,StartY,0}]),
+  println(Seen.values.max).
+
+proceed(G, Seen, []).
+proceed(G, Seen, [{X,Y,Count}|Xs]) :-
+  Seen.has_key({X,Y}),
+  proceed(G, Seen, Xs).
+
+proceed(G, Seen, [{X,Y,Count}|Xs]) :-
+  Seen.put({X,Y},Count),
+  moves(G, X, Y, Moves),
+  Xs2 = Xs ++ [{X2,Y2,Count+1} : {X2,Y2} in Moves],
+  proceed(G, Seen, Xs2).
+
+moves(G, X, Y, Moves) :-
+  Moves = [{X+I,Y+J} : Dir in [down,up,left,right], from(Dir,G,X,Y), goes(Dir,G,X,Y), {I,J} = offset(Dir)].
+
+offset(down) = {0,1}.
+offset(up) = {0,-1}.
+offset(left) = {-1,0}.
+offset(right) = {1,0}.
+
+extract(G,StartX,StartY) :-
+  H = G.len,
+  W = G[1].len,
+
+  X = -1,
+  Y = -1,
+  Found = false,
+  foreach (J in 1..H, break(Found))
+    foreach (I in 1..W)
+      if G[J,I] == 'S' then
+        X := I,
+        Y := J,
+        Found := true,
+
+        infer_section(G, I, J, Section),
+        println(start_piece=Section),
+        G[J,I] := Section,
+      end
+    end
+  end,
+
+  StartX = X,
+  StartY = Y.
+
+goes(down, G, I, J) :- membchk(G[J,I], "|7F").
+goes(up, G, I, J) :- membchk(G[J,I], "|LJ").
+goes(left, G, I, J) :- membchk(G[J,I], "-J7").
+goes(right, G, I, J) :- membchk(G[J,I], "-LF").
+
+from(up, G, I, J) :- J > 1, membchk(G[J-1, I], "|7F").
+from(down, G, I, J) :- J < G.len, membchk(G[J+1, I], "|LJ").
+from(right, G, I, J) :- I < G[J].len, membchk(G[J, I+1], "-J7").
+from(left, G, I, J) :- I > 1, membchk(G[J, I-1], "-LF").
+
+infer_section(G, I, J, S) :- from(down, G, I, J), from(up, G, I, J), S = '|'.
+infer_section(G, I, J, S) :- from(right, G, I, J), from(left, G, I, J), S = '-'.
+infer_section(G, I, J, S) :- from(up, G, I, J), from(right, G, I, J), S = 'L'.
+infer_section(G, I, J, S) :- from(left, G, I, J), from(up, G, I, J), S = 'J'.
+infer_section(G, I, J, S) :- from(down, G, I, J), from(left, G, I, J), S = '7'.
+infer_section(G, I, J, S) :- from(down, G, I, J), from(right, G, I, J), S = 'F'.

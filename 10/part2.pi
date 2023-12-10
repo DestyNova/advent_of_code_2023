@@ -1,0 +1,103 @@
+import util.
+
+main =>
+  G = read_file_lines(),
+  extract(G,StartX,StartY),
+
+  Seen = new_map(),
+  bfs(G, Seen, [{StartX,StartY,0}]),
+
+  Inside = 0,
+  foreach (J in 2..G.len)
+    foreach(I in 2..G[1].len, not(Seen.has_key({I,J})))
+      Crossed = 0,
+      Crossings = new_array(G[1].len),
+      On_edge = false,
+      foreach (X in 1..I)
+        C = G[J,X],
+        if Seen.has_key({X,J}) then
+          if C == '|' then
+            Crossed := Crossed + 1, % directly enter region
+          elseif On_edge == false && membchk(C,"FL") then
+            On_edge := C,           % enter an edge
+          elseif is_crossing(On_edge, C) then
+            On_edge := false,       % cross from edge into region
+            Crossed := Crossed + 1,
+          elseif is_grazing(On_edge, C) then
+            On_edge := false,       % "graze" an edge without entering region
+          end,
+        end,
+
+      end,
+      if Crossed mod 2 == 1 then
+        Inside := Inside + 1
+      end
+    end
+  end,
+  println(inside=Inside).
+
+is_crossing('L', '7').
+is_crossing('F', 'J').
+is_grazing('L', 'J').
+is_grazing('F', '7').
+
+bfs(G, Seen, []).
+bfs(G, Seen, [{X,Y,Count}|Xs]) :-
+  Seen.has_key({X,Y}),
+  bfs(G, Seen, Xs).
+
+bfs(G, Seen, [{X,Y,Count}|Xs]) :-
+  Seen.put({X,Y},Count),
+  Moves = moves(G, X, Y),
+  Xs2 = Xs ++ [{X2,Y2,Count+1} : {X2,Y2} in Moves],
+  bfs(G, Seen, Xs2).
+
+in_bounds(G,X,Y) :- X >= 1, X <= G[1].len, Y >= 1, Y <= G.len.
+
+moves(G, X, Y) = [{X+I,Y+J} : Dir in [down,up,left,right], from(Dir,G,X,Y), goes(Dir,G,X,Y), {I,J} = offset(Dir)].
+
+offset(down) = {0,1}.
+offset(up) = {0,-1}.
+offset(left) = {-1,0}.
+offset(right) = {1,0}.
+
+extract(G,StartX,StartY) :-
+  H = G.len,
+  W = G[1].len,
+
+  X = -1,
+  Y = -1,
+  Found = false,
+  foreach (J in 1..H, break(Found))
+    foreach (I in 1..W)
+      if G[J,I] == 'S' then
+        X := I,
+        Y := J,
+        Found := true,
+
+        infer_section(G, I, J, Section),
+        println(start_piece=Section),
+        G[J,I] := Section,
+      end
+    end
+  end,
+
+  StartX = X,
+  StartY = Y.
+
+goes(down, G, I, J) :- membchk(G[J,I], "|7F").
+goes(up, G, I, J) :- membchk(G[J,I], "|LJ").
+goes(left, G, I, J) :- membchk(G[J,I], "-J7").
+goes(right, G, I, J) :- membchk(G[J,I], "-LF").
+
+from(up, G, I, J) :- J > 1, membchk(G[J-1, I], "|7F").
+from(down, G, I, J) :- J < G.len, membchk(G[J+1, I], "|LJ").
+from(right, G, I, J) :- I < G[J].len, membchk(G[J, I+1], "-J7").
+from(left, G, I, J) :- I > 1, membchk(G[J, I-1], "-LF").
+
+infer_section(G, I, J, S) :- from(down, G, I, J), from(up, G, I, J), S = '|'.
+infer_section(G, I, J, S) :- from(right, G, I, J), from(left, G, I, J), S = '-'.
+infer_section(G, I, J, S) :- from(up, G, I, J), from(right, G, I, J), S = 'L'.
+infer_section(G, I, J, S) :- from(left, G, I, J), from(up, G, I, J), S = 'J'.
+infer_section(G, I, J, S) :- from(down, G, I, J), from(left, G, I, J), S = '7'.
+infer_section(G, I, J, S) :- from(down, G, I, J), from(right, G, I, J), S = 'F'.
