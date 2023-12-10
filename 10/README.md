@@ -27,6 +27,16 @@ Seems simple now, but while debugging and looking at the (thankfully plentiful) 
 
 This method is relatively inefficient but the program still runs in 0.2s. The repeated ray casting seems wasteful because it repeatedly traverses segments that have already been scanned, so it's possible that we could keep track of the latest state rather than recalculating it for every column. My first attempt failed though, producing duplicate counts, so I'll leave that for another day (or, more likely, never).
 
+#### Update 18:49:
+
+I stumbled upon a great suggestion in a Youtube comment, originally from a Reddit discussion:
+
+```
+For a point x that is not in the loop, check all the pipes to the left of it. If there's an odd number of ' | ', ' L ', ' J ' then it must be inside the loop
+```
+
+That is so much simpler than the "edge entry" logic I got stuck on. Bear in mind when checking "all pipes to the left", those pipes must also be part of the pipe path (i.e. members of the `Seen` set). I implemented the changes in `part2_simpler.pi` and it allowed me to remove about 15 lines of code. Sometimes you can get so bogged down thinking about a specific solution that a more elegant and simpler alternative can escape your attention. Not sure how to get better at that, other than practice and learning from other people's solutions I guess.
+
 ## Timings (with hyperfine)
 
 ### Part 1

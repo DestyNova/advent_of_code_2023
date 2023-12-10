@@ -11,20 +11,10 @@ main =>
   foreach (J in 2..G.len)
     foreach(I in 2..G[1].len, not(Seen.has_key({I,J})))
       Crossed = 0,
-      On_edge = false,
       foreach (X in 1..I)
         C = G[J,X],
-        if Seen.has_key({X,J}) then
-          if C == '|' then
-            Crossed := Crossed + 1, % directly enter region
-          elseif On_edge == false && membchk(C,"FL") then
-            On_edge := C,           % enter an edge
-          elseif is_crossing(On_edge, C) then
-            On_edge := false,       % cross from edge into region
-            Crossed := Crossed + 1,
-          elseif is_grazing(On_edge, C) then
-            On_edge := false,       % "graze" an edge without entering region
-          end,
+        if Seen.has_key({X,J}) && membchk(C, "|LJ") then
+          Crossed := Crossed + 1, % directly enter region
         end,
 
       end,
@@ -34,11 +24,6 @@ main =>
     end
   end,
   println(inside=Inside).
-
-is_crossing('L', '7').
-is_crossing('F', 'J').
-is_grazing('L', 'J').
-is_grazing('F', '7').
 
 bfs(G, Seen, []).
 bfs(G, Seen, [{X,Y,Count}|Xs]) :-
