@@ -23,21 +23,24 @@ So if we reach an `L` for example, we've found an edge and will cross into a new
 .L--JoL--Jo
 ```
 
+Seems simple now, but while debugging and looking at the (thankfully plentiful) example grids, it didn't feel so simple!
+
+This method is relatively inefficient but the program still runs in 0.2s. The repeated ray casting seems wasteful because it repeatedly traverses segments that have already been scanned, so it's possible that we could keep track of the latest state rather than recalculating it for every column. My first attempt failed though, producing duplicate counts, so I'll leave that for another day (or, more likely, never).
 
 ## Timings (with hyperfine)
 
 ### Part 1
 
 ```
-Benchmark 1: picat ./part1.pi < input
-  Time (mean ± σ):      18.9 ms ±   0.8 ms    [User: 9.8 ms, System: 9.0 ms]
-  Range (min … max):    17.2 ms …  21.4 ms    136 runs
+Benchmark 1: picat part1.pi < input
+  Time (mean ± σ):      74.5 ms ±   1.0 ms    [User: 59.7 ms, System: 14.8 ms]
+  Range (min … max):    72.9 ms …  77.4 ms    38 runs
 ```
 
 ### Part 2
 
 ```
-Benchmark 1: picat ./part2.pi < input
-  Time (mean ± σ):      23.8 ms ±   1.1 ms    [User: 12.7 ms, System: 11.0 ms]
-  Range (min … max):    21.8 ms …  27.0 ms    105 runs
+Benchmark 1: picat part2.pi < input
+  Time (mean ± σ):     205.8 ms ±   4.8 ms    [User: 186.3 ms, System: 19.3 ms]
+  Range (min … max):   201.3 ms … 221.3 ms    14 runs
 ```

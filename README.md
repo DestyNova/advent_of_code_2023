@@ -16,12 +16,12 @@ My solutions for the [Advent of Code 2023](https://adventofcode.com/2023/) progr
 ───────────────────────────────────────────────────────────────────────────────
 Language                     Files       Lines     Blanks    Comments      Code
 ───────────────────────────────────────────────────────────────────────────────
-Picat                           19         511         84           1       426
-Markdown                        10         403        125           0       278
+Picat                           21         671        112           1       558
+Markdown                        11         449        139           0       310
 ───────────────────────────────────────────────────────────────────────────────
-Total                           29         914        209           1       704
+Total                           32        1120        251           1       868
 ───────────────────────────────────────────────────────────────────────────────
-Processed 38594 bytes, 0.039 megabytes (SI)
+Processed 45962 bytes, 0.046 megabytes (SI)
 ───────────────────────────────────────────────────────────────────────────────
 ```
 
@@ -36,7 +36,7 @@ Processed 38594 bytes, 0.039 megabytes (SI)
 * Day 7: [Camel Cards](https://github.com/DestyNova/advent_of_code_2023/blob/main/7)
 * Day 8: [Haunted Wasteland](https://github.com/DestyNova/advent_of_code_2023/blob/main/8)
 * Day 9: [Mirage Maintenance](https://github.com/DestyNova/advent_of_code_2023/blob/main/9)
-* Day 10: [???](https://github.com/DestyNova/advent_of_code_2023/blob/main/10)
+* Day 10: [Pipe Maze](https://github.com/DestyNova/advent_of_code_2023/blob/main/10)
 * Day 11: [???](https://github.com/DestyNova/advent_of_code_2023/blob/main/11)
 * Day 12: [???](https://github.com/DestyNova/advent_of_code_2023/blob/main/12)
 * Day 13: [???](https://github.com/DestyNova/advent_of_code_2023/blob/main/13)
