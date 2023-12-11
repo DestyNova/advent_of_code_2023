@@ -19,4 +19,4 @@ To avoid comparing distances between galaxies in both directions, I couldn't com
 *** error(type_error(number,{}(115,1)),>= /2)
 ```
 
-So it seems the comparison operators aren't overloaded for pairs. Instead, I used `compare_terms` which did the job fine and cut the runtime to 1 second.
+So it seems the comparison operators aren't overloaded for pairs. Instead, I used `compare_terms` which did the job fine and cut the runtime to 1 second. Later, Hakan Kjellerstrand pointed out that there is a term comparison operator `@<` which works and is nicer looking.

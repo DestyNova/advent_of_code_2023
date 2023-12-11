@@ -7,7 +7,7 @@ main =>
 
   Galaxies = [{X,Y} : Y in 1..G.len, X in 1..G[1].len, G[Y,X] == '#'],
   Distances = 0,
-  foreach (A in Galaxies, B in Galaxies, A != B, compare_terms(A,B) < 1)
+  foreach (A in Galaxies, B in Galaxies, A != B, A @< B)
     Distances := Distances + distance(G, A, B, Widths, Heights),
   end,
   println(Distances).
