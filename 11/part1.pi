@@ -2,55 +2,19 @@ import util.
 
 main =>
   G0 = read_file_lines(),
-  print_map(G0),
   Blank_rows = find_blank_lines(G0),
   Blank_cols = find_blank_lines(G0.transpose()),
-  println(Blank_rows),
   G1 = explode_blanks(G0, Blank_rows),
   G = explode_blanks(G1.transpose(), Blank_cols).transpose(),
-  print_map(G),
 
   Galaxies = [{X,Y} : Y in 1..G.len, X in 1..G[1].len, G[Y,X] == '#'],
-  println(Galaxies),
-  println(len(Galaxies)),
-  All_pairs = [{A,B} : A in Galaxies, B in Galaxies, A != B],
-  println(pairs=All_pairs.len),
-
-  Dists = new_map(),
-  % edge / vertex init
-  foreach (Y in 1..G.len, X in 1..G[1].len)
-    Dists.put({{X,Y},{X,Y}}, 0),
-    Edges = [{A,B} : {I,J} in [{-1,0},{0,-1},{1,0},{0,1}], A = X+I, B = Y+J, in_bounds(G, A, B)],
-    foreach ({A,B} in Edges)
-      Dists.put({{X,Y},{A,B}}, 1)
-    end,
+  Distances = 0,
+  foreach (A in Galaxies, B in Galaxies, A != B)
+    Distances := Distances + distance(G, A, B),
   end,
-  % calculate
-  foreach (Y1 in 1..G.len, X1 in 1..G[1].len)
-    K = {X1, Y1},
-    println(K),
-    foreach (Y2 in 1..G.len, X2 in 1..G[1].len)
-      I = {X2, Y2},
-      foreach (Y3 in 1..G.len, X3 in 1..G[1].len)
-        J = {X3, Y3},
-        %println(nodes={K,I,J}),
-        %println(dist=Dists.get({K,J})),
-        D1 = Dists.get({I,J}, 2**31),
-        D2 = Dists.get({I,K}, 2**31),
-        D3 = Dists.get({K,J}, 2**31),
-        if D1 > D2 + D3 then
-          Dists.put({I,J}, D2 + D3)
-        end,
-      end,
-    end,
-  end,
-
-  println(Dists.size),
-
-  Distances = [Dists.get({A,B}) : {A,B} in All_pairs].sum,
   println(Distances // 2).
 
-in_bounds(G, X, Y) => X >= 1, X <= G[1].len(), Y >= 1, Y <= G.len.
+distance(G, {X,Y}, {I,J}) = abs(X-I) + abs(Y-J).
 
 find_blank_lines(G) = [cond(R.remove_dups() == ".", true, false) : {R,I} in zip(G, 1..G.len)].
 
@@ -63,8 +27,3 @@ explode_blanks(G, Blanks) = R =>
     end,
   end,
   R = G2.reverse().
-
-print_map(G) =>
-  foreach (R in G)
-    println(R)
-  end.

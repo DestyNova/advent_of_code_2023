@@ -16,12 +16,12 @@ My solutions for the [Advent of Code 2023](https://adventofcode.com/2023/) progr
 ───────────────────────────────────────────────────────────────────────────────
 Language                     Files       Lines     Blanks    Comments      Code
 ───────────────────────────────────────────────────────────────────────────────
-Picat                           21         671        112           1       558
-Markdown                        11         449        139           0       310
+Picat                           24         808        136           1       671
+Markdown                        12         476        150           0       326
 ───────────────────────────────────────────────────────────────────────────────
-Total                           32        1120        251           1       868
+Total                           36        1284        286           1       997
 ───────────────────────────────────────────────────────────────────────────────
-Processed 45962 bytes, 0.046 megabytes (SI)
+Processed 52201 bytes, 0.052 megabytes (SI)
 ───────────────────────────────────────────────────────────────────────────────
 ```
 
@@ -37,7 +37,7 @@ Processed 45962 bytes, 0.046 megabytes (SI)
 * Day 8: [Haunted Wasteland](https://github.com/DestyNova/advent_of_code_2023/blob/main/8)
 * Day 9: [Mirage Maintenance](https://github.com/DestyNova/advent_of_code_2023/blob/main/9)
 * Day 10: [Pipe Maze](https://github.com/DestyNova/advent_of_code_2023/blob/main/10)
-* Day 11: [???](https://github.com/DestyNova/advent_of_code_2023/blob/main/11)
+* Day 11: [Cosmic Expansion](https://github.com/DestyNova/advent_of_code_2023/blob/main/11)
 * Day 12: [???](https://github.com/DestyNova/advent_of_code_2023/blob/main/12)
 * Day 13: [???](https://github.com/DestyNova/advent_of_code_2023/blob/main/13)
 * Day 14: [???](https://github.com/DestyNova/advent_of_code_2023/blob/main/14)
