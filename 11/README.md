@@ -13,4 +13,10 @@ That allowed me to dump half my code and complete part 1 in reasonable time (0.0
 
 For part 2, my naieve "duplicate blank rows / columns" approach wasn't going to work, so I changed that function to collect each row's "height" and each column's width. These would be 1 if that row or column has galaxies in it, or 1000000 if not. Then in the distance calculation, sum the widths of traversed columns and heights of traversed rows.
 
-It's slowish, taking 2 seconds on this machine, but it works.
+To avoid comparing distances between galaxies in both directions, I couldn't compare pairs with `<=`, since this produced the following error:
+
+```
+*** error(type_error(number,{}(115,1)),>= /2)
+```
+
+So it seems the comparison operators aren't overloaded for pairs. Instead, I used `compare_terms` which did the job fine and cut the runtime to 1 second.

@@ -7,19 +7,18 @@ main =>
 
   Galaxies = [{X,Y} : Y in 1..G.len, X in 1..G[1].len, G[Y,X] == '#'],
   Distances = 0,
-  foreach (A in Galaxies, B in Galaxies, A != B)
+  foreach (A in Galaxies, B in Galaxies, A != B, compare_terms(A,B) < 1)
     Distances := Distances + distance(G, A, B, Widths, Heights),
   end,
-  println(Distances // 2).
+  println(Distances).
 
-distance(G, {X,Y}, {I,J}, Widths, Heights) = R =>
+distance(G, {X,Y}, {I,J}, Widths, Heights) = D =>
   D = 0,
   foreach(A in min(Y,J)..max(Y,J)-1)
     D := D + Heights[A],
   end,
   foreach(B in min(X,I)..max(X,I)-1)
     D := D + Widths[B],
-  end,
-  R = D.
+  end.
 
 find_blank_lines(G) = [cond(R.remove_dups() == ".", 1000000, 1) : {R,I} in zip(G, 1..G.len)].
