@@ -5,19 +5,19 @@ main =>
   println(sum(Data.map(calc))).
 
 table
-calc({[],[]}) = 1.                             % consumed all sequences
-calc({['.'|Xs],Lengths}) = calc({Xs,Lengths}). % safe to consume a .
-calc({Xs@['?'|_],[]}) = calc({Xs.tail,[]}).    % no remaining sequences: this must be a .
+calc({[],[]})              = 1.                  % consumed all sequences
+calc({['.'|Xs],Lengths})   = calc({Xs,Lengths}). % safe to consume a .
+calc({Xs@['?'|_],[]})      = calc({Xs.tail,[]}). % no remaining sequences: this must be a .
 calc({Xs@['#'|_],Lengths}) = count_broke(Xs, Lengths).
-calc({Xs@['?'|_],Lengths}) = count_broke(Xs, Lengths) + calc({Xs.tail, Lengths}). % both possibilities
-calc(_) = 0.                                % anything else is invalid
+calc({Xs@['?'|_],Lengths}) = count_broke(Xs, Lengths) + calc({Xs.tail, Lengths}). % count both possibilities
+calc(_)                    = 0.                  % anything else is invalid
 
 count_broke(Xs, [L|Lengths]) = R =>
   Block = Xs.take(L).remove_dups,
   R = cond((Xs.len < L || membchk('.', Block) || ['#'|_] = Xs.drop(L)),
-    0,                                         % mismatched sequence length
-    calc({Xs.drop(L+1),Lengths})).             % valid sequence, drop it with following . and move on
-count_broke(_, _) = 0.
+    0,                                           % wrong sequence length
+    calc({Xs.drop(L+1),Lengths})).               % valid sequence, drop it with following . and move on
+count_broke(_, _) = 0.                           % anything else is invalid
 
 parse_all([]) = [].
 parse_all([S|Xs]) = R =>
