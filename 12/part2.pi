@@ -5,7 +5,7 @@ main =>
   println(sum(Data.map(calc))).
 
 table
-calc({[],Lengths}) = cond(Lengths.len > 0, 0, 1).  % should have no remaining sequences
+calc({[],Lengths}) = 1 - Lengths.len.sign.         % should have no remaining sequences
 calc({['.'|Xs],Lengths}) = calc({Xs,Lengths}).     % safe to consume a .
 calc({Xs@['#'|_],[]}) = 0.                         % already consumed all sequences: invalid
 calc({Xs@['?'|_],[]}) = calc({Xs.tail,[]}).        % no remaining sequences: this must be a .
@@ -14,8 +14,8 @@ calc({Xs@['?'|_],Lengths}) = count_broke(Xs, Lengths) + calc({Xs.tail, Lengths})
 
 count_broke(Xs, Lengths) = R =>
   L = Lengths[1],
-  Block = Xs.take(L).remove_dups(),
-  R = cond((Xs.len < L || membchk('.', Block) || (Xs.len > L && Xs[L+1] == '#')),
+  Block = Xs.take(L).remove_dups,
+  R = cond((Xs.len < L || membchk('.', Block) || ['#'|_] = Xs.drop(L)),
     0,                                             % mismatched sequence length
     calc({Xs.drop(L+1),Lengths.tail})).            % valid sequence, drop it and move on
 
