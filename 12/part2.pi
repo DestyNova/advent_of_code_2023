@@ -5,10 +5,11 @@ main =>
   println(sum(Data.map(calc))).
 
 table
-calc({[],Lengths}) = 1 - Lengths.len.sign.         % should have no remaining sequences
-calc({['.'|Xs],Lengths}) = calc({Xs,Lengths}).     % safe to consume a .
-calc({Xs@['#'|_],[]}) = 0.                         % already consumed all sequences: invalid
-calc({Xs@['?'|_],[]}) = calc({Xs.tail,[]}).        % no remaining sequences: this must be a .
+calc({[],[]}) = 1.                             % consumed all sequences
+calc({[],_}) = 0.                              % missing some sequences
+calc({['.'|Xs],Lengths}) = calc({Xs,Lengths}). % safe to consume a .
+calc({Xs@['#'|_],[]}) = 0.                     % already consumed all sequences: invalid
+calc({Xs@['?'|_],[]}) = calc({Xs.tail,[]}).    % no remaining sequences: this must be a .
 calc({Xs@['#'|_],Lengths}) = count_broke(Xs, Lengths).
 calc({Xs@['?'|_],Lengths}) = count_broke(Xs, Lengths) + calc({Xs.tail, Lengths}). % both possibilities
 
