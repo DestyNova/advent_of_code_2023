@@ -18,7 +18,7 @@ count_broke(Xs, Lengths) = R =>
   Block = Xs.take(L).remove_dups,
   R = cond((Xs.len < L || membchk('.', Block) || ['#'|_] = Xs.drop(L)),
     0,                                             % mismatched sequence length
-    calc({Xs.drop(L+1),Lengths.tail})).            % valid sequence, drop it and move on
+    calc({Xs.drop(L+1),Lengths.tail})).            % valid sequence, drop it with following . and move on
 
 parse_all([]) = [].
 parse_all([S|Xs]) = R =>
