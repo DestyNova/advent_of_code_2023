@@ -1,0 +1,52 @@
+import util.
+import cp.
+
+main =>
+  Data = parse_all(read_file_lines()),
+
+  Count = 0,
+  foreach (D in Data)
+    calc(D, Sols),
+    Count := Count + Sols
+  end,
+  println(Count).
+
+calc({Springs,Lengths}, Sols) =>
+  Ends = new_array(Lengths.len + 1),
+  Ends[1] #= 0,
+
+  States = new_array(Springs.len),
+  States :: 0..1,
+  foreach(I in 1..Springs.len)
+    if Springs[I] == '.' then
+      States[I] #= 0
+    elseif Springs[I] == '#' then
+      States[I] #= 1
+    end,
+  end,
+
+  foreach (I in 1..Lengths.len)
+    Start #> Ends[I],
+    Start :: 1 .. Springs.len,
+
+    foreach(J in 1..Lengths[I])
+      Index #= Start+J-1,
+      element(Index, States, 1),
+    end,
+
+
+    Ends[I+1] #= Start + Lengths[I] - 1,
+    if I < Lengths.len then
+      Blank_spot #= Start + Lengths[I],
+      element(Blank_spot, States, 0),
+    end,
+  end,
+
+  sum(States) #= sum(Lengths),
+  Sols = solve_all([], [States,Ends]).len.
+
+parse_all([]) = [].
+parse_all([S|Xs]) = R =>
+  [Springs,Ns] = S.split(),
+  Lengths = Ns.split(",").map(parse_term),
+  R = [{Springs,Lengths}|parse_all(Xs)].
