@@ -7,26 +7,17 @@ main =>
 table
 calc({[],Lengths}) = cond(Lengths.len > 0, 0, 1).  % should have no remaining sequences
 calc({['.'|Xs],Lengths}) = calc({Xs,Lengths}).     % safe to consume a .
-calc({Xs@['#'|_],[]}) = 0.                         % already consumed all sequences, shouldn't find another #
-calc({Xs@['#'|_],Lengths}) = R =>
-  L = Lengths[1],
-  Block = Xs.take(L).remove_dups(),
-  if Xs.len >= L && membchk(Block, [[],"#","#?"]) && (Xs.len == L || membchk(Xs[L+1], ".?")) then
-    R = calc({Xs.drop(L+1),Lengths.tail}),    % drop the following character which must be a blank or ?
-  else
-    R = 0,
-  end.
+calc({Xs@['#'|_],[]}) = 0.                         % already consumed all sequences: invalid
+calc({Xs@['?'|_],[]}) = calc({Xs.tail,[]}).        % no remaining sequences: this must be a .
+calc({Xs@['#'|_],Lengths}) = count_broke(Xs, Lengths).
+calc({Xs@['?'|_],Lengths}) = count_broke(Xs, Lengths) + calc({Xs.tail, Lengths}). % both possibilities
 
-calc({Xs@['?'|_],[]}) = calc({Xs.tail,[]}).        % no remaining sequences, this must be a .
-calc({Xs@['?'|_],Lengths}) = R =>
+count_broke(Xs, Lengths) = R =>
   L = Lengths[1],
   Block = Xs.take(L).remove_dups(),
-  Count_broke = cond(
-    (Xs.len < L || membchk('.', Block) || (Xs.len > L && Xs[L+1] == '#')),
-    0,
-    calc({Xs.drop(L+1),Lengths.tail})),
-  Count_ok = calc({Xs.tail, Lengths}),
-  R = Count_broke + Count_ok.
+  R = cond((Xs.len < L || membchk('.', Block) || (Xs.len > L && Xs[L+1] == '#')),
+    0,                                             % mismatched sequence length
+    calc({Xs.drop(L+1),Lengths.tail})).            % valid sequence, drop it and move on
 
 parse_all([]) = [].
 parse_all([S|Xs]) = R =>
