@@ -19,9 +19,9 @@ main =>
 find_mid(G) = R =>
   R = [find_mid_alt(G,0)],
   foreach (X in 1..G[1].len, Y in 1..G.len)
-    G[Y,X] := flip(G[Y,X]),
-    V = find_mid_alt(G,R[1]),
-    G[Y,X] := flip(G[Y,X]),
+    G[Y,X] := flip(G[Y,X]),     % flip a tile
+    V = find_mid_alt(G,R[1]),   % check for a new solution
+    G[Y,X] := flip(G[Y,X]),     % flip back
     if V > 0 && V != R[1] then
       R := R ++ [V]
     end,
