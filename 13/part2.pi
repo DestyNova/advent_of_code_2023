@@ -1,0 +1,58 @@
+import util.
+
+main =>
+  Data = parse_all(read_file_lines()),
+  SumA = 0,
+  SumB = 0,
+  foreach(G in Data)
+    println("--------------"),
+    Horiz = find_mid(G.transpose.map(reverse)),
+    Vert = find_mid(G),
+    println(horiz_vert={Horiz,Vert}),
+    min(Horiz.len, Vert.len) = 1,            % one axis will not have a new solution
+    max(Horiz.len, Vert.len) > 1,            % the other will have a second solution
+    H = cond(Horiz.len == 1, 0, Horiz.last), % ignore part 1 solutions
+    V = cond(Vert.len == 1, 0, Vert.last),   % keep the second solution
+    SumB := SumB + H,
+    SumA := SumA + V,
+  end,
+  println(100*SumA + SumB).
+
+find_mid(G) = R =>
+  R = [find_mid_alt(G,0)],
+  print_grid(G),
+  println(r=R),
+  foreach (X in 1..G[1].len, Y in 1..G.len)
+    G[Y,X] := flip(G[Y,X]),
+    V = find_mid_alt(G,R[1]),
+    G[Y,X] := flip(G[Y,X]),
+    if V > 0 && V != R[1] then
+      R := R ++ [V]
+    end,
+  end.
+
+find_mid_alt(G,Except) = R =>
+  R = 0,
+
+  foreach (I in 1..G.len-1)
+    Left = G[1..I].reverse(),
+    Right = G[I+1..G.len],
+    Len = min(Left.len, Right.len),
+
+    if Left.take(Len) == Right.take(Len) && I != Except then
+      R := I
+    end,
+  end.
+      
+print_grid(Xs) =>
+  foreach(S in Xs)
+    println(S)
+  end.
+
+flip('.') = '#'.
+flip('#') = '.'.
+
+parse_all(Xs) = parse_all(Xs, []).
+parse_all([],D) = [D.reverse()].
+parse_all([""|Xs],D) = [D.reverse()|parse_all(Xs,[])].
+parse_all([S|Xs],D) = parse_all(Xs, [S|D]).

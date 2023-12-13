@@ -1,0 +1,30 @@
+import util.
+
+main =>
+  Data = parse_all(read_file_lines()),
+  SumA = 0,
+  SumB = 0,
+  foreach(G in Data)
+    println("--------------"),
+    SumA := SumA + find_mid(G),
+    SumB := SumB + find_mid(G.transpose.map(reverse)),
+  end,
+  println(100*SumA + SumB).
+
+find_mid(G) = R =>
+  R = 0,
+
+  foreach (I in 1..G.len-1)
+    Left = G[1..I].reverse(),
+    Right = G[I+1..G.len],
+    Len = min(Left.len, Right.len),
+
+    if Left.take(Len) == Right.take(Len) then
+      R := R + I
+    end,
+  end.
+      
+parse_all(Xs) = parse_all(Xs, []).
+parse_all([],D) = [D.reverse()].
+parse_all([""|Xs],D) = [D.reverse()|parse_all(Xs,[])].
+parse_all([S|Xs],D) = parse_all(Xs, [S|D]).
