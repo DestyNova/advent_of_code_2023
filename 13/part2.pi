@@ -1,10 +1,10 @@
 import util.
 
 main =>
-  Data = parse_all(read_file_lines()),
+  Grids = parse_all(read_file_lines()),
   SumA = 0,
   SumB = 0,
-  foreach(G in Data)
+  foreach(G in Grids)
     Horiz = find_mid(G.transpose.map(reverse)),
     Vert = find_mid(G),
     min(Horiz.len, Vert.len) = 1,            % one axis will not have a new solution
@@ -31,11 +31,11 @@ find_mid_alt(G,Except) = R =>
   R = 0,
 
   foreach (I in 1..G.len-1)
-    Left = G[1..I].reverse(),
-    Right = G[I+1..G.len],
-    Len = min(Left.len, Right.len),
+    Upper = G[1..I].reverse(),
+    Lower = G[I+1..G.len],
+    Len = min(Upper.len, Lower.len),
 
-    if Left.take(Len) == Right.take(Len) && I != Except then
+    if Upper.take(Len) == Lower.take(Len) && I != Except then
       R := I
     end,
   end.

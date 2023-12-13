@@ -1,0 +1,31 @@
+import util.
+
+main =>
+  Grids = parse_all(read_file_lines()),
+  calc(Grids, 0), % part 1: find reflection point with no wrong tiles
+  calc(Grids, 1). % part 2: find reflection point with exactly one wrong tile
+
+calc(Grids, Errors) =>
+  SumH = sum([find_mid(G.transpose.map(reverse), Errors) : G in Grids]),
+  SumV = sum([find_mid(G, Errors) : G in Grids]),
+  println(100*SumV + SumH).
+
+find_mid(G, Errors) = R =>
+  R = 0,
+  foreach (I in 1..G.len-1)
+    Upper = G[1..I].reverse().join(","),
+    Lower = G[I+1..G.len].join(","),
+    Len = min(Upper.len, Lower.len),
+
+    if sum([1 : {U,L} in zip(Upper.take(Len), Lower.take(Len)), U != L]) == Errors then
+      R := I
+    end,
+  end.
+      
+flip('.') = '#'.
+flip('#') = '.'.
+
+parse_all(Xs) = parse_all(Xs, []).
+parse_all([],D) = [D.reverse()].
+parse_all([""|Xs],D) = [D.reverse()|parse_all(Xs,[])].
+parse_all([S|Xs],D) = parse_all(Xs, [S|D]).
