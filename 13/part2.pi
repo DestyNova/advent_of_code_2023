@@ -5,10 +5,8 @@ main =>
   SumA = 0,
   SumB = 0,
   foreach(G in Data)
-    println("--------------"),
     Horiz = find_mid(G.transpose.map(reverse)),
     Vert = find_mid(G),
-    println(horiz_vert={Horiz,Vert}),
     min(Horiz.len, Vert.len) = 1,            % one axis will not have a new solution
     max(Horiz.len, Vert.len) > 1,            % the other will have a second solution
     H = cond(Horiz.len == 1, 0, Horiz.last), % ignore part 1 solutions
@@ -20,8 +18,6 @@ main =>
 
 find_mid(G) = R =>
   R = [find_mid_alt(G,0)],
-  print_grid(G),
-  println(r=R),
   foreach (X in 1..G[1].len, Y in 1..G.len)
     G[Y,X] := flip(G[Y,X]),
     V = find_mid_alt(G,R[1]),
@@ -44,11 +40,6 @@ find_mid_alt(G,Except) = R =>
     end,
   end.
       
-print_grid(Xs) =>
-  foreach(S in Xs)
-    println(S)
-  end.
-
 flip('.') = '#'.
 flip('#') = '.'.
 

@@ -5,7 +5,6 @@ main =>
   SumA = 0,
   SumB = 0,
   foreach(G in Data)
-    println("--------------"),
     SumA := SumA + find_mid(G),
     SumB := SumB + find_mid(G.transpose.map(reverse)),
   end,
