@@ -35,6 +35,12 @@ The `(N - Loop_begin)` was needed to take into account that the beginning offset
 
 All in all a good puzzle, even though I was slow to figure out the right numbers.
 
+### Update 10:08
+
+I heard from Hakan that solving it with tabling does work, and went back to check. Turns out I left out a `table` declaration in the most important place. The program was still quite slow though, taking about 5 minutes on the sample input. However, Picat's memory usage grew rapidly, up to about 25 Gb when I killed it at first. Adding a manual call to `garbage_collect/0` every 10,000 iterations or so seems to work, although it seems odd that Picat doesn't automatically do it on a more frequent basis.
+
+Then it occurred to me that I could batch several calls together in the tabled function. In fact, since we want to do a total of 1000000000 steps, we can really perform any number of cycles that divides evenly into this number. There's obviously some tradeoff somewhere, but I found that an `Unroll_size` of 1000 solves the problem in 3.6 seconds. Wow. I'll have to remember that trick!
+
 ## Timings (with hyperfine)
 
 ### Part 1
@@ -51,4 +57,12 @@ Benchmark 1: picat part1.pi < input
 Benchmark 1: picat part2.pi < input
   Time (mean ± σ):      3.325 s ±  0.007 s    [User: 3.268 s, System: 0.055 s]
   Range (min … max):    3.319 s …  3.336 s    10 runs
+```
+
+### Part 2 with "unrolled DP"
+
+```
+Benchmark 1: picat part2_brute.pi < input
+  Time (mean ± σ):      3.564 s ±  0.032 s    [User: 3.532 s, System: 0.025 s]
+  Range (min … max):    3.538 s …  3.633 s    10 runs
 ```

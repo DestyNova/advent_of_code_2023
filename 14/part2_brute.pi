@@ -1,0 +1,53 @@
+import util.
+
+main =>
+  G = read_file_lines(),
+
+  Seen = new_map(),
+  N = 1000000000,
+  I = 0,
+  Unroll_size = 1000,
+
+  while (I < N)
+    if I mod 1000000 == 0 then
+      garbage_collect()
+    end,
+    G := G.cycle(Unroll_size),
+    I := I + Unroll_size,
+  end,
+  println(calc_load(G)).
+
+table
+cycle(G, Unroll_size) = R => % DP + loop unrolling = genius
+  foreach (I in 1..Unroll_size)
+    G := G.move(north).move(west).move(south).move(east)
+  end,
+  R = G.
+
+table
+move(G,north) = move(G).
+move(G,west) = G.transpose.map(reverse).move.map(reverse).transpose.
+move(G,east) = G.map(reverse).transpose.move.transpose.map(reverse).
+move(G,south) = G.reverse.move.reverse.
+
+move(Grid) = R =>
+  G = Grid.copy_term,
+  foreach (J in 1..G.len)
+    foreach (I in 1..G[1].len)
+      if G[J,I] == 'O' then
+        Y = J,
+        G[Y,I] := '.',
+        while (Y > 1 && G[Y-1,I] == '.')
+          Y := Y - 1,
+        end,
+        G[Y,I] := 'O',
+      end,
+    end,
+  end,
+  R = G.
+
+calc_load(G) = R =>
+  R = 0,
+  foreach (I in 1..G.len)
+    R := R + (G.len - I + 1) * sum([1 : C in G[I], C == 'O']),
+  end.
