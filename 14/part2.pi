@@ -1,0 +1,52 @@
+import util.
+
+main =>
+  G = read_file_lines(),
+
+  Seen = new_map(),
+  N = 1000000000,
+  I = 1,
+  Found = false,
+
+  while (I <= N)
+    G := move(G,north),
+    G := move(G,west),
+    G := move(G,south),
+    G := move(G,east),
+    if not(Found) && Seen.has_key(G) then
+      Loop_begin = Seen.get(G),
+      Found := true,
+      Loop_size = I - Loop_begin,
+      I := Loop_begin + (N - Loop_begin) // Loop_size * Loop_size,
+    end,
+    Seen.put(G.copy_term(), I),
+    I := I + 1,
+  end,
+  println(calc_load(G)).
+
+move(G,north) = move(G).
+move(G,west) = G.transpose.map(reverse).move.map(reverse).transpose.
+move(G,east) = G.map(reverse).transpose.move.transpose.map(reverse).
+move(G,south) = G.reverse.move.reverse.
+
+move(Grid) = R =>
+  G = Grid.copy_term,
+  foreach (J in 1..G.len)
+    foreach (I in 1..G[1].len)
+      if G[J,I] == 'O' then
+        Y = J,
+        G[Y,I] := '.',
+        while (Y > 1 && G[Y-1,I] == '.')
+          Y := Y - 1,
+        end,
+        G[Y,I] := 'O',
+      end,
+    end,
+  end,
+  R = G.
+
+calc_load(G) = R =>
+  R = 0,
+  foreach (I in 1..G.len)
+    R := R + (G.len - I + 1) * sum([1 : C in G[I], C == 'O']),
+  end.
