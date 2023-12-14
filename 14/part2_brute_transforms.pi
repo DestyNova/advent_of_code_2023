@@ -21,33 +21,34 @@ cycle(G, Unroll_size) = R =>
   end,
   R = G.
 
-table
+table(+,+)
 move(Grid,Dir) = R =>
   G = Grid.copy_term,
   foreach (J in 1..G.len)
     foreach (I in 1..G[1].len)
-      if read(G,J,I,Dir) == 'O' then
+      {Row_0,Col_0} = transform(G.len,J,I,Dir),
+      if G[Row_0,Col_0] == 'O' then
         Y = J,
-        {Row,Col} = transform(G,Y,I,Dir),
+        {Row,Col} = transform(G.len,Y,I,Dir),
         G[Row,Col] := '.',
-        while (Y > 1 && read(G,Y-1,I,Dir) == '.')
+        {Row1,Col1} = transform(G.len,Y-1,I,Dir),
+        while (Y > 1 && G[Row1,Col1] == '.')
           Y := Y - 1,
+          {Row_t,Col_t} = transform(G.len,Y-1,I,Dir),
+          Row1 := Row_t,
+          Col1 := Col_t,
         end,
-        {Row2,Col2} = transform(G,Y,I,Dir),
+        {Row2,Col2} = transform(G.len,Y,I,Dir),
         G[Row2,Col2] := 'O',
       end,
     end,
   end,
   R = G.
 
-transform(G,J,I,north) = {J,I}.
-transform(G,J,I,east) = {I,G.len-J+1}.
-transform(G,J,I,south) = {G.len - J + 1,I}.
-transform(G,J,I,west) = {G.len - I + 1,J}.
-
-read(G,J,I,Dir) = R =>
-  {Row,Col} = transform(G,J,I,Dir),
-  R = G[Row,Col].
+transform(L,J,I,north) = {J,I}.
+transform(L,J,I,east) = {I,L-J+1}.
+transform(L,J,I,south) = {L-J+ 1,I}.
+transform(L,J,I,west) = {L-I+1,J}.
 
 calc_load(G) = R =>
   R = 0,
