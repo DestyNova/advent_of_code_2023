@@ -1,0 +1,56 @@
+import util.
+
+main =>
+  G = read_file_lines(),
+
+  N = 1000000000,
+  I = 0,
+  Unroll_size = 1000,
+
+  while (I < N)
+    Steps = min(Unroll_size, N - I),
+    G := G.cycle(Steps),
+    I := I + Steps,
+  end,
+  println(calc_load(G)).
+
+table
+cycle(G, Unroll_size) = R => % DP + loop unrolling = genius
+  foreach (I in 1..Unroll_size)
+    G := G.move(north).move(west).move(south).move(east)
+  end,
+  R = G.
+
+table
+move(Grid,Dir) = R =>
+  G = Grid.copy_term,
+  foreach (J in 1..G.len)
+    foreach (I in 1..G[1].len)
+      if read(G,J,I,Dir) == 'O' then
+        Y = J,
+        {Row,Col} = transform(G,Y,I,Dir),
+        G[Row,Col] := '.',
+        while (Y > 1 && read(G,Y-1,I,Dir) == '.')
+          Y := Y - 1,
+        end,
+        {Row2,Col2} = transform(G,Y,I,Dir),
+        G[Row2,Col2] := 'O',
+      end,
+    end,
+  end,
+  R = G.
+
+transform(G,J,I,north) = {J,I}.
+transform(G,J,I,east) = {I,G.len-J+1}.
+transform(G,J,I,south) = {G.len - J + 1,I}.
+transform(G,J,I,west) = {G.len - I + 1,J}.
+
+read(G,J,I,Dir) = R =>
+  {Row,Col} = transform(G,J,I,Dir),
+  R = G[Row,Col].
+
+calc_load(G) = R =>
+  R = 0,
+  foreach (I in 1..G.len)
+    R := R + (G.len - I + 1) * sum([1 : C in G[I], C == 'O']),
+  end.
