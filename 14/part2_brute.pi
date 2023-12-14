@@ -30,8 +30,10 @@ move(G,south) = G.reverse.move.reverse.
 
 move(Grid) = R =>
   G = Grid.copy_term,
-  foreach (J in 1..G.len)
-    foreach (I in 1..G[1].len)
+  H = G.len,
+  W = G[1].len,
+  foreach (J in 1..H)
+    foreach (I in 1..W)
       if G[J,I] == 'O' then
         Y = J,
         G[Y,I] := '.',

@@ -24,21 +24,23 @@ cycle(G, Unroll_size) = R =>
 table(+,+)
 move(Grid,Dir) = R =>
   G = Grid.copy_term,
-  foreach (J in 1..G.len)
-    foreach (I in 1..G[1].len)
-      {Row_0,Col_0} = transform(G.len,J,I,Dir),
+  H = G.len,
+  W = G[1].len,
+  foreach (J in 1..H)
+    foreach (I in 1..W)
+      {Row_0,Col_0} = transform(H,J,I,Dir),
       if G[Row_0,Col_0] == 'O' then
         Y = J,
-        {Row,Col} = transform(G.len,Y,I,Dir),
+        {Row,Col} = transform(H,Y,I,Dir),
         G[Row,Col] := '.',
-        {Row1,Col1} = transform(G.len,Y-1,I,Dir),
+        {Row1,Col1} = transform(H,Y-1,I,Dir),
         while (Y > 1 && G[Row1,Col1] == '.')
           Y := Y - 1,
-          {Row_t,Col_t} = transform(G.len,Y-1,I,Dir),
+          {Row_t,Col_t} = transform(H,Y-1,I,Dir),
           Row1 := Row_t,
           Col1 := Col_t,
         end,
-        {Row2,Col2} = transform(G.len,Y,I,Dir),
+        {Row2,Col2} = transform(H,Y,I,Dir),
         G[Row2,Col2] := 'O',
       end,
     end,
