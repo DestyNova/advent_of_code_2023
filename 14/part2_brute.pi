@@ -9,11 +9,9 @@ main =>
   Unroll_size = 1000,
 
   while (I < N)
-    if I mod 1000000 == 0 then
-      garbage_collect()
-    end,
-    G := G.cycle(Unroll_size),
-    I := I + Unroll_size,
+    Steps = min(Unroll_size, N - I),
+    G := G.cycle(Steps),
+    I := I + Steps,
   end,
   println(calc_load(G)).
 

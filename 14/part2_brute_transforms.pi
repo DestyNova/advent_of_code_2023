@@ -15,7 +15,7 @@ main =>
   println(calc_load(G)).
 
 table
-cycle(G, Unroll_size) = R => % DP + loop unrolling = genius
+cycle(G, Unroll_size) = R =>
   foreach (I in 1..Unroll_size)
     G := G.move(north).move(west).move(south).move(east)
   end,
