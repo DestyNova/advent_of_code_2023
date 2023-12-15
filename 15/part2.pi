@@ -1,0 +1,33 @@
+import util.
+
+main =>
+  Words = read_file_lines().head.split(","),
+  Boxes = new_map(),
+
+  foreach (W in Words)
+    Op = head([C : C in W, membchk(C,"-=")]),
+    Terms = W.split("-="),
+    [S,N] = cond(Op == '-', [Terms[1],0], [Terms[1],Terms[2].parse_term]),
+    Id = S.score(),
+    Contents = Boxes.get(Id, []),
+
+    if Op == '-' then
+      Boxes.put(Id, [{X,Y} : {X,Y} in Contents, X != S]),
+    elseif member({S,_},Contents) then
+      Boxes.put(Id, [{X,Y2} : {X,Y} in Contents, Y2 = cond(X == S, N, Y)]),
+    else
+      Boxes.put(Id, Contents ++ [{S,N}]),
+    end,
+  end,
+
+  Sum = 0,
+  foreach (K=V in Boxes)
+    foreach ({I,{_,Focal}} in zip(1..V.len, V))
+      Sum := Sum + (K+1) * I * Focal
+    end,
+  end,
+  println(Sum).
+
+score(S) = score_rec(S,0).
+score_rec([],N) = N.
+score_rec([C|Cs], N) = score_rec(Cs, ((N + ord(C)) * 17) mod 256).

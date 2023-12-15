@@ -16,12 +16,12 @@ My solutions for the [Advent of Code 2023](https://adventofcode.com/2023/) progr
 ───────────────────────────────────────────────────────────────────────────────
 Language                     Files       Lines     Blanks    Comments      Code
 ───────────────────────────────────────────────────────────────────────────────
-Picat                           32        1122        186           1       935
-Markdown                        15         620        199           0       421
+Picat                           36        1277        207           1      1069
+Markdown                        16         673        215           0       458
 ───────────────────────────────────────────────────────────────────────────────
-Total                           47        1742        385           1      1356
+Total                           52        1950        422           1      1527
 ───────────────────────────────────────────────────────────────────────────────
-Processed 68080 bytes, 0.068 megabytes (SI)
+Processed 74140 bytes, 0.074 megabytes (SI)
 ───────────────────────────────────────────────────────────────────────────────
 ```
 
@@ -41,7 +41,7 @@ Processed 68080 bytes, 0.068 megabytes (SI)
 * Day 12: [Hot Springs](https://github.com/DestyNova/advent_of_code_2023/blob/main/12)
 * Day 13: [Point of Incidence](https://github.com/DestyNova/advent_of_code_2023/blob/main/13)
 * Day 14: [Parabolic Reflector Dish](https://github.com/DestyNova/advent_of_code_2023/blob/main/14)
-* Day 15: [???](https://github.com/DestyNova/advent_of_code_2023/blob/main/15)
+* Day 15: [Lens Library](https://github.com/DestyNova/advent_of_code_2023/blob/main/15)
 * Day 16: [???](https://github.com/DestyNova/advent_of_code_2023/blob/main/16)
 * Day 17: [???](https://github.com/DestyNova/advent_of_code_2023/blob/main/17)
 * Day 18: [???](https://github.com/DestyNova/advent_of_code_2023/blob/main/18)

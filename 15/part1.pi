@@ -1,0 +1,10 @@
+import util.
+
+main =>
+  Words = read_file_lines().head.split(","),
+  Xs = Words.map(score),
+  println(sum(Xs)).
+
+score(S) = score_rec(S,0).
+score_rec([],N) = N.
+score_rec([C|Cs], N) = score_rec(Cs, ((N + ord(C)) * 17) mod 256).
