@@ -14,8 +14,7 @@ main =>
 go(Beams,G,W,H) = R =>
   Energised = new_set(),
   Seen = new_set(),
-  while (Beams.len > 0)
-    [{X,Y,Dir}|Rest] = Beams,
+  while ([{X,Y,Dir}|Rest] = Beams)
     Beams := Rest,
     if not(Seen.has_key({X,Y,Dir})) then
       Seen.put({X,Y,Dir}),

@@ -25,14 +25,14 @@ I kept an intermediate version `part2_weird_error.pi` and corresponding .txt fil
 
 ```
 Benchmark 1: picat part1.pi < input
-  Time (mean ± σ):      27.9 ms ±   1.0 ms    [User: 16.9 ms, System: 10.9 ms]
-  Range (min … max):    25.8 ms …  30.9 ms    90 runs
+  Time (mean ± σ):      26.7 ms ±   1.0 ms    [User: 15.8 ms, System: 10.8 ms]
+  Range (min … max):    24.6 ms …  30.2 ms    100 runs
 ```
 
 ### Part 2
 
 ```
 Benchmark 1: picat part2.pi < input
-  Time (mean ± σ):      2.955 s ±  0.030 s    [User: 2.907 s, System: 0.046 s]
-  Range (min … max):    2.920 s …  3.001 s    10 runs
+  Time (mean ± σ):      2.722 s ±  0.047 s    [User: 2.676 s, System: 0.045 s]
+  Range (min … max):    2.662 s …  2.792 s    10 runs
 ```
