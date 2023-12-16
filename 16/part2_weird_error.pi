@@ -4,8 +4,6 @@ main =>
   G = read_file_lines(),
   H = G.len,
   W = G[1].len,
-  % beam enters at 1,1
-  % heads to the right
   Max = 0,
   foreach (I in 1..W)
     Max := max(Max, go([{I,1,south}])),
@@ -21,16 +19,13 @@ go(Beams) = R =>
   while (Beams.len > 0)
     {X,Y,Dir} = Beams.head,
     Beams := Beams.tail,
-    if (Seen.has_key({X,Y,Dir})) then
-      println(already_seen)
-    else
+    if not(Seen.has_key({X,Y,Dir})) then
       Energised.put({X,Y}),
       Seen.put({X,Y,Dir}),
       New_beams = [{I,J,New_dir} : {I,J,New_dir} in step_beam(G[Y,X],X,Y,Dir), I >= 1, I <= W, J >= 1, J <=W],
       foreach (Beam in New_beams)
         Beams := [Beam|Beams]
       end,
-      Beams := Beams.remove_dups(),
     end,
   end,
 
