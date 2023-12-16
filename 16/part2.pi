@@ -26,23 +26,23 @@ go(Beams,G,W,H) = R =>
   end,
   R = Energised.size.
 
-step_beam('.',X,Y,Dir) = [inc(X,Y,Dir)].
-step_beam('|',X,Y,north) = [inc(X,Y,north)].
-step_beam('|',X,Y,south) = [inc(X,Y,south)].
-step_beam('|',X,Y,_) = [inc(X,Y,north),inc(X,Y,south)].
-step_beam('-',X,Y,east) = [inc(X,Y,east)].
-step_beam('-',X,Y,west) = [inc(X,Y,west)].
-step_beam('-',X,Y,_) = [inc(X,Y,west),inc(X,Y,east)].
-step_beam('/',X,Y,east) = [inc(X,Y,north)].
-step_beam('/',X,Y,west) = [inc(X,Y,south)].
-step_beam('/',X,Y,north) = [inc(X,Y,east)].
-step_beam('/',X,Y,south) = [inc(X,Y,west)].
-step_beam('\\',X,Y,east) = [inc(X,Y,south)].
-step_beam('\\',X,Y,west) = [inc(X,Y,north)].
+step_beam('.',X,Y,Dir)    = [inc(X,Y,Dir)].
+step_beam('|',X,Y,north)  = [inc(X,Y,north)].
+step_beam('|',X,Y,south)  = [inc(X,Y,south)].
+step_beam('|',X,Y,_)      = [inc(X,Y,north),inc(X,Y,south)].
+step_beam('-',X,Y,east)   = [inc(X,Y,east)].
+step_beam('-',X,Y,west)   = [inc(X,Y,west)].
+step_beam('-',X,Y,_)      = [inc(X,Y,west),inc(X,Y,east)].
+step_beam('/',X,Y,east)   = [inc(X,Y,north)].
+step_beam('/',X,Y,west)   = [inc(X,Y,south)].
+step_beam('/',X,Y,north)  = [inc(X,Y,east)].
+step_beam('/',X,Y,south)  = [inc(X,Y,west)].
+step_beam('\\',X,Y,east)  = [inc(X,Y,south)].
+step_beam('\\',X,Y,west)  = [inc(X,Y,north)].
 step_beam('\\',X,Y,north) = [inc(X,Y,west)].
 step_beam('\\',X,Y,south) = [inc(X,Y,east)].
 
-inc(X,Y,north) = {X,Y-1,north}.
-inc(X,Y,east) = {X+1,Y,east}.
-inc(X,Y,south) = {X,Y+1,south}.
-inc(X,Y,west) = {X-1,Y,west}.
+inc(X,Y,north)            = {X,Y-1,north}.
+inc(X,Y,east)             = {X+1,Y,east}.
+inc(X,Y,south)            = {X,Y+1,south}.
+inc(X,Y,west)             = {X-1,Y,west}.
