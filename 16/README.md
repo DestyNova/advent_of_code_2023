@@ -15,6 +15,10 @@ I was surprised again today to find that part 2 was a trivial extension of part 
 
 The program isn't very efficient, and initially took around 17 seconds to finish. Then I tried removing the `Beams.remove_dups` call which I had added to make it go faster. Removing this dropped the time to around 3 seconds, proving that sometimes premature optimisation can make your program **slower**.
 
+## Weird Picat error
+
+I kept an intermediate version `part2_weird_error.pi` and corresponding .txt file which captured a really confusing error. It turned out I'd forgotten to pass in the `H` and `W` values, which were indeed treated as free variables. I really wish Picat would at least give line numbers, if not actually show the line in question with some visible markers.
+
 ## Timings (with hyperfine)
 
 ### Part 1
