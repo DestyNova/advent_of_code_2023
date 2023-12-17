@@ -1,0 +1,48 @@
+import planner.
+import util.
+
+main =>
+  Grid = [[parse_term([C]) : C in L] : L in read_file_lines()],
+  get_global_map(g1).put(dims,{Grid[1].len, Grid.len}),
+  get_global_map(g1).put(grid,Grid),
+
+  garbage_collect(400000000),
+  S0 = {1,1,east,0},
+  best_plan_unbounded(S0,_Plan,Cost),
+  writeln(Cost).
+
+table
+action(S, S1, New_dir, Cost) ?=>
+  {W,H} = get_global_map(g1).get(dims),
+  Grid = get_global_map(g1).get(grid),
+  {I,J,Dir,Consecutive} = S,
+
+  member(New_dir, [north,east,south,west]),
+  not(backwards(New_dir, Dir)),
+  New_consecutive = cond(New_dir == Dir, Consecutive + 1, 1),
+  (New_dir == Dir || Consecutive >= 4),
+  New_consecutive <= 10,
+  {I2, J2} = inc(I,J,New_dir),
+  I2 >= 1, I2 <= W,
+  J2 >= 1, J2 <= H,
+  S1 = {I2, J2, New_dir, New_consecutive},
+  Cost = Grid[J2,I2].
+
+heuristic({I,J,_,_}) = R =>
+  {W,H} = get_global_map(g1).get(dims),
+  Grid = get_global_map(g1).get(grid),
+  R = (H - J) + (W - I) + Grid[H,W] - 1.
+
+final({I,J,Dir,Consecutive}) =>
+  Consecutive >= 4,
+  {I,J} = get_global_map(g1).get(dims).
+
+inc(X,Y,north)            = {X,Y-1}.
+inc(X,Y,east)             = {X+1,Y}.
+inc(X,Y,south)            = {X,Y+1}.
+inc(X,Y,west)             = {X-1,Y}.
+
+backwards(north,south).
+backwards(east, west).
+backwards(south,north).
+backwards(west,east).

@@ -1,0 +1,79 @@
+import planner.
+import util.
+
+main =>
+  Grid = [[parse_term([C]) : C in L] : L in read_file_lines()],
+
+  get_global_map(g1).put(dims,{Grid[1].len, Grid.len}),
+  get_global_map(g1).put(grid,Grid),
+
+  garbage_collect(400000000),
+  S0 = {1,1,[]},
+  best_plan_bin(S0,3804218,Plan,Cost),
+  writeln(Plan),
+  writeln(Cost).
+
+table
+action(S, S1, Action, Cost) ?=>
+  {W,H} = get_global_map(g1).get(dims),
+  Grid = get_global_map(g1).get(grid),
+  {I,J,Last_moves} = S,
+
+  member(Action, [north,east,south,west]),
+  Is_turn = cond(Last_moves.len == 0, Action != east, Last_moves[1] != Action),
+  Consecutive_moves = count_consecutive_moves(Last_moves),
+  (Consecutive_moves < 10 || Is_turn),
+  (Consecutive_moves >= 4 || not(Is_turn)),
+
+  can_turn(Action, Last_moves),
+  {I2, J2} = inc(I,J,Action),
+  I2 >= 1, I2 <= W,
+  J2 >= 1, J2 <= H,
+  S1 = {I2, J2, [Action|Last_moves.take(11)]},
+  Cost = Grid[J2,I2].
+
+heuristic({I,J,_}) = R =>
+  {W,H} = get_global_map(g1).get(dims),
+  Grid = get_global_map(g1).get(grid),
+  R = (H - J) + (W - I) + Grid[H,W] - 1.
+
+final({I,J,Last_moves}) =>
+  {I,J} = get_global_map(g1).get(dims),
+  count_consecutive_moves(Last_moves) >= 4,
+  current_resource_plan_cost(_,_,Cost),
+  println(Cost).
+  %printf("%d: %s\n\n", S.length, S),
+
+count_consecutive_moves([]) = 0.
+count_consecutive_moves(Last_moves) = Moves =>
+  Moves = 1,
+  Not_consecutive = false,
+  foreach (A in Last_moves.tail, break(Not_consecutive))
+    %println(a=A),
+    if A == Last_moves.head then
+      Moves := Moves + 1
+    else
+      Not_consecutive := true
+    end
+  end.
+
+inc(X,Y,north)            = {X,Y-1}.
+inc(X,Y,east)             = {X+1,Y}.
+inc(X,Y,south)            = {X,Y+1}.
+inc(X,Y,west)             = {X-1,Y}.
+
+can_turn(east, []).
+can_turn(north, []).
+can_turn(south, []).
+can_turn(west,  [north|_]).
+can_turn(north, [north|_]).
+can_turn(east,  [north|_]).
+can_turn(north, [east|_]).
+can_turn(east,  [east|_]).
+can_turn(south, [east|_]).
+can_turn(east,  [south|_]).
+can_turn(south, [south|_]).
+can_turn(west,  [south|_]).
+can_turn(south, [west|_]).
+can_turn(west,  [west|_]).
+can_turn(north, [west|_]).

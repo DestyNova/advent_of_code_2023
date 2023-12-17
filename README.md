@@ -16,13 +16,14 @@ My solutions for the [Advent of Code 2023](https://adventofcode.com/2023/) progr
 ───────────────────────────────────────────────────────────────────────────────
 Language                     Files       Lines     Blanks    Comments      Code
 ───────────────────────────────────────────────────────────────────────────────
-Picat                           39        1437        218          13      1206
-Markdown                        17         707        227           0       480
+Picat                           42        1600        244          13      1343
+Markdown                        18         743        241           0       502
+Nim                              1         117         24           0        93
 Plain Text                       1           6          0           0         6
 ───────────────────────────────────────────────────────────────────────────────
-Total                           57        2150        445          13      1692
+Total                           62        2466        509          13      1944
 ───────────────────────────────────────────────────────────────────────────────
-Processed 81591 bytes, 0.082 megabytes (SI)
+Processed 92770 bytes, 0.093 megabytes (SI)
 ───────────────────────────────────────────────────────────────────────────────
 ```
 
@@ -44,7 +45,7 @@ Processed 81591 bytes, 0.082 megabytes (SI)
 * Day 14: [Parabolic Reflector Dish](https://github.com/DestyNova/advent_of_code_2023/blob/main/14)
 * Day 15: [Lens Library](https://github.com/DestyNova/advent_of_code_2023/blob/main/15)
 * Day 16: [The Floor Will Be Lava](https://github.com/DestyNova/advent_of_code_2023/blob/main/16)
-* Day 17: [???](https://github.com/DestyNova/advent_of_code_2023/blob/main/17)
+* Day 17: [Clumsy Crucible](https://github.com/DestyNova/advent_of_code_2023/blob/main/17)
 * Day 18: [???](https://github.com/DestyNova/advent_of_code_2023/blob/main/18)
 * Day 19: [???](https://github.com/DestyNova/advent_of_code_2023/blob/main/19)
 * Day 20: [???](https://github.com/DestyNova/advent_of_code_2023/blob/main/20)
