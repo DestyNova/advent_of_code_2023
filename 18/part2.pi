@@ -7,7 +7,7 @@ main =>
   Boundary = sum([max(abs(X1-X2), abs(Y1-Y2)) : {{X1,Y1},{X2,Y2}} in zip(G,G.tail)]),
   println(Area + Boundary // 2 + 1).
 
-parse_all([],Pairs) = Pairs.reverse.
+parse_all([],Pairs) = Pairs.
 parse_all([L|Lines],Pairs@[{X,Y}|_]) = R =>
   [_,[D1,D2,D3,D4,D5,Dir|_]] = L.split("#"),
   N = parse_radix_string(flatten([D1,D2,D3,D4,D5]), 16),
