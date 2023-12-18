@@ -19,7 +19,7 @@ With the polygon area found, we can then substitute it into Pick's theorem and r
 
 $$ A(P) = I(P) + \frac 1 2 B(P) - 1 $$
 
-$$ \implies I(P) = A(P) - \frac 1 2 B(P) + 1 $$
+$$ \therefore I(P) = A(P) - \frac 1 2 B(P) + 1 $$
 
 But in this case we want to include the boundary points in the count too. Since the polygon is constructed of only horizontal and vertical segments, we can just zip up successive pairs of points and sum the absolute differences:
 
