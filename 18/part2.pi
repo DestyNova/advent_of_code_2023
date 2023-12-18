@@ -9,9 +9,9 @@ main =>
 
 parse_all([],Pairs) = Pairs.
 parse_all([L|Lines],Pairs@[{X,Y}|_]) = R =>
-  [_,[D1,D2,D3,D4,D5,Dir|_]] = L.split("#"),
-  N = parse_radix_string(flatten([D1,D2,D3,D4,D5]), 16),
-  {X_offset,Y_offset} = get_offset(parse_term([Dir])),
+  [_,S] = L.split("#"),
+  N = parse_radix_string(S[1..5], 16),
+  {X_offset,Y_offset} = get_offset(parse_term([S[6]])),
   R = parse_all(Lines, [{X+X_offset*N, Y+Y_offset*N} | Pairs]).
 
 get_offset(0) = {1,0}.
