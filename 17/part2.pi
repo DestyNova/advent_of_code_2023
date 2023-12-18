@@ -20,7 +20,7 @@ action(S, S1, New_dir, Cost) ?=>
   member(New_dir, [north,east,south,west]),
   not(backwards(New_dir, Dir)),
   New_consecutive = cond(New_dir == Dir, Consecutive + 1, 1),
-  (New_dir == Dir || Consecutive >= 4),
+  (New_dir == Dir || Cost == 0 || Consecutive >= 4),
   New_consecutive <= 10,
   {I2, J2} = inc(I,J,New_dir),
   I2 >= 1, I2 <= W,

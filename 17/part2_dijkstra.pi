@@ -1,0 +1,66 @@
+import util.
+
+main =>
+  Grid = [[parse_term([C]) : C in L] : L in read_file_lines()],
+  get_global_map(g1).put(dims,{Grid[1].len, Grid.len}),
+  get_global_map(g1).put(grid,Grid),
+
+  garbage_collect(400000000),
+  S0 = {1,1,east,0},
+  dijkstra(S0,0,Cost), % very slow -- 2 minutes 12 seconds on my machine
+  println(Cost).
+
+dijkstra(Init_state, Init_cost, Total_cost) =>
+  Q = new_min_heap([[Init_cost, Init_state]]),
+  Seen = new_set(),
+  Best_cost = -1,
+  while (Q.heap_size() > 0, Best_cost < 0)
+    [Cost, S] = Q.heap_pop(),
+    if not(Seen.has_key(S)) then
+      Seen.put(S),
+      if final(S) then
+        Best_cost := Cost
+      else
+        Next_states = findall([S1,New_cost,_], action(S, Cost, S1, _, New_cost)).remove_dups,
+        foreach ([S1,New_cost,_] in Next_states)
+          Q.heap_push([New_cost,S1])
+        end,
+      end,
+    end,
+  end,
+  Total_cost = Best_cost.
+
+action(S, Cost, S1, Action, New_cost) ?=>
+  member(Action, [north,east,south,west]),
+  {W,H} = get_global_map(g1).get(dims),
+  Grid = get_global_map(g1).get(grid),
+  {I,J,Dir,Consecutive} = S,
+
+  not(backwards(Action, Dir)),
+  New_consecutive = cond(Action == Dir, Consecutive + 1, 1),
+  (Action == Dir || Cost == 0 || Consecutive >= 4),
+  New_consecutive <= 10,
+  {I2, J2} = inc(I,J,Action),
+  I2 >= 1, I2 <= W,
+  J2 >= 1, J2 <= H,
+  S1 = {I2, J2, Action, New_consecutive},
+  New_cost = Cost + Grid[J2,I2].
+
+heuristic({I,J,_,_}) = R =>
+  {W,H} = get_global_map(g1).get(dims),
+  Grid = get_global_map(g1).get(grid),
+  R = (H - J) + (W - I) + Grid[H,W] - 1.
+
+final({I,J,Dir,Consecutive}) =>
+  Consecutive >= 4,
+  {I,J} = get_global_map(g1).get(dims).
+
+inc(X,Y,north)            = {X,Y-1}.
+inc(X,Y,east)             = {X+1,Y}.
+inc(X,Y,south)            = {X,Y+1}.
+inc(X,Y,west)             = {X-1,Y}.
+
+backwards(north,south).
+backwards(east, west).
+backwards(south,north).
+backwards(west,east).
