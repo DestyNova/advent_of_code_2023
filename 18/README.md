@@ -13,7 +13,11 @@ Before I finished reading the description of part 2, someone in chat mentioned [
 
 And by figure it out, I mean do a few web searches for Pick's theorem. The formula expresses the area of a lattice polygon (a polygon made of only integer points) as the sume of interior lattice points + half the boundary points - 1. Annoyingly, most of the results just handwaved away the difficulty of counting the interior points of the polygon. How are you meant to do that if there are trillions of interior points??
 
-Thankfully, one of the maths pages mentioned the [Shoelace theorem](https://artofproblemsolving.com/wiki/index.php/Shoelace_Theorem) as a handy aside. I looked into this too and found that it would trivially allow us to find the area of the polygon by multiplying together adjacent X and Y coordinates in a pleasing pattern.
+Thankfully, one of the maths pages mentioned the [Shoelace theorem](https://artofproblemsolving.com/wiki/index.php/Shoelace_Theorem) as a handy aside. I looked into this too and found that it would trivially allow us to find the area of the polygon by multiplying together adjacent X and Y coordinates in a pleasing pattern. I found the following neater alternative to the usual formula:
+
+$$ A = \frac{1}{2} \left\vert{\sum_{i=1}^n {(x_{i+1}+x_i)(y_{i+1}-y_i)}}\right\vert $$
+
+(Note: the vertical bars denoting `abs(...)` don't seem to work in Firefox's MathJax renderer, but they're there if you zoom in...)
 
 With the polygon area found, we can then substitute it into Pick's theorem and rearrange:
 
