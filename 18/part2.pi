@@ -1,0 +1,20 @@
+import util.
+
+main =>
+  G = parse_all(read_file_lines(),[{0,0}]),
+  Shoelace_sum = sum([(X2+X1)*(Y2-Y1) : I in 1..G.len, {X1,Y1} = G[I], {X2,Y2} = G[(I mod G.len)+1]]),
+  Area = abs(Shoelace_sum) // 2,
+  Boundary = sum([max(abs(X1-X2), abs(Y1-Y2)) : {{X1,Y1},{X2,Y2}} in zip(G,G.tail)]),
+  println(Area + Boundary // 2 + 1).
+
+parse_all([],Pairs) = Pairs.reverse.
+parse_all([L|Lines],Pairs@[{X,Y}|_]) = R =>
+  [_,[D1,D2,D3,D4,D5,Dir|_]] = L.split("#"),
+  N = parse_radix_string(flatten([D1,D2,D3,D4,D5]), 16),
+  {X_offset,Y_offset} = get_offset(parse_term([Dir])),
+  R = parse_all(Lines, [{X+X_offset*N, Y+Y_offset*N} | Pairs]).
+
+get_offset(0) = {1,0}.
+get_offset(1) = {0,1}.
+get_offset(2) = {-1,0}.
+get_offset(3) = {0,-1}.

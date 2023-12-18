@@ -16,14 +16,14 @@ My solutions for the [Advent of Code 2023](https://adventofcode.com/2023/) progr
 ───────────────────────────────────────────────────────────────────────────────
 Language                     Files       Lines     Blanks    Comments      Code
 ───────────────────────────────────────────────────────────────────────────────
-Picat                           42        1600        244          13      1343
-Markdown                        18         743        241           0       502
+Picat                           44        1664        254          13      1397
+Markdown                        18         744        241           0       503
 Nim                              1         117         24           0        93
 Plain Text                       1           6          0           0         6
 ───────────────────────────────────────────────────────────────────────────────
-Total                           62        2466        509          13      1944
+Total                           64        2531        519          13      1999
 ───────────────────────────────────────────────────────────────────────────────
-Processed 92770 bytes, 0.093 megabytes (SI)
+Processed 95037 bytes, 0.095 megabytes (SI)
 ───────────────────────────────────────────────────────────────────────────────
 ```
 
@@ -46,7 +46,7 @@ Processed 92770 bytes, 0.093 megabytes (SI)
 * Day 15: [Lens Library](https://github.com/DestyNova/advent_of_code_2023/blob/main/15)
 * Day 16: [The Floor Will Be Lava](https://github.com/DestyNova/advent_of_code_2023/blob/main/16)
 * Day 17: [Clumsy Crucible](https://github.com/DestyNova/advent_of_code_2023/blob/main/17)
-* Day 18: [???](https://github.com/DestyNova/advent_of_code_2023/blob/main/18)
+* Day 18: [Lavaduct Lagoon](https://github.com/DestyNova/advent_of_code_2023/blob/main/18)
 * Day 19: [???](https://github.com/DestyNova/advent_of_code_2023/blob/main/19)
 * Day 20: [???](https://github.com/DestyNova/advent_of_code_2023/blob/main/20)
 * Day 21: [???](https://github.com/DestyNova/advent_of_code_2023/blob/main/21)

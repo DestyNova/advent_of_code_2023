@@ -1,0 +1,43 @@
+import util.
+
+main =>
+  G = parse_all(0,0,read_file_lines()),
+  MinX = min([X : {X,_} in G.keys]),
+  MaxX = max([X : {X,_} in G.keys]),
+  MinY = min([Y : {_,Y} in G.keys]),
+  MaxY = max([Y : {_,Y} in G.keys]),
+  W = MaxX - MinX + 1,
+  H = MaxY - MinY + 1,
+
+  Seen = new_set(),
+  bfs(G, MinX-1, MaxX+1, MinY-1, MaxY+1, Seen, [{MinX-1,MinY-1}]),
+  Slop = (W+2)*2 + H*2,
+  Inside = W*H - (Seen.size - Slop),
+  println(Inside).
+
+bfs(G, _, _, _, _, Seen, []).
+bfs(G, MinX, MaxX, MinY, MaxY, Seen, [{X,Y}|Xs]) :-
+  Seen.has_key({X,Y}),
+  bfs(G, MinX, MaxX, MinY, MaxY, Seen, Xs).
+
+bfs(G, MinX, MaxX, MinY, MaxY, Seen, [{X,Y}|Xs]) :-
+  Seen.put({X,Y}),
+  Moves = moves(G, X, Y),
+  Xs2 = Xs ++ [{I,J} : {I,J} in Moves, I >= MinX, I <= MaxX, J >= MinY, J <= MaxY, not(G.has_key({I,J}))],
+  bfs(G, MinX, MaxX, MinY, MaxY, Seen, Xs2).
+
+moves(G, X, Y) = [{X+I,Y+J} : Dir in ["U","R","D","L"], {I,J} = get_offset(Dir)].
+
+parse_all(X,Y,Lines) = parse_all(X,Y,Lines,[{0,0}="#000000"]).
+parse_all(_,_,[],Pairs) = new_map(Pairs).
+parse_all(X,Y,[L|Lines],Pairs) = R =>
+  [Dir,N_s,Colour] = L.split,
+  N = parse_term(N_s),
+  {X_offset,Y_offset} = get_offset(Dir),
+  Pairs2 = Pairs ++ [{X+X_offset*I,Y+Y_offset*I}=Colour : I in 1..N],
+  R = parse_all(X+N*X_offset, Y+N*Y_offset, Lines, Pairs2).
+
+get_offset("U") = {0,-1}.
+get_offset("R") = {1,0}.
+get_offset("D") = {0,1}.
+get_offset("L") = {-1,0}.

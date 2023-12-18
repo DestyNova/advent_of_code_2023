@@ -18,7 +18,7 @@ While waiting for that version to complete, I pulled out my Nim code from last y
 Anyway, while working on the Nim solution, the Picat version finished with the right answer. This still felt slow, so I watched [Hyperneutrino's video](https://www.youtube.com/watch?v=2pDSooPLLkI) walking through a solution also using Dijkstra. Two big optimisations for my own code immediately became apparent:
 
 1. Picat version: Instead of including the list of the previous 11 directions in the vertex definition, just store the count of consecutive moves, incrementing it by one when continuing straight ahead, and resetting it to one when changing direction. This seems really obvious in retrospect, but hey. That change reduced my Picat part 2 runtime to 23 seconds.
-2. Nim version: Don't include the current cost in the states we store in the visited set! Including it means the search can encounter loops that take a lot of time to break out of. We know there is no reason to ever visit the same grid tile more than once. Removing it dropped the runtime from around 5 minutes down to 548 ms. Not bad.
+2. Nim version: Don't include the current cost in the states we store in the visited set! Including it means the search can encounter loops that take a lot of time to break out of. We know there is no reason to ever visit the same grid tile more than once. Removing it dropped the runtime from around 5 minutes down to 548 ms. Pretty cool.
 
 ## Timings (with hyperfine)
 
