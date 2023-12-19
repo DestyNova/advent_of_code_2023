@@ -1,0 +1,135 @@
+% Ignore this, I had no idea how to make this work with CP or SAT without enumerating all solutions
+import util.
+import sat.
+
+main =>
+  Data = read_file_lines().map(process),
+  M = new_map(),
+  Ratings = [],
+
+  foreach (D in Data, D != [])
+    if not(is_list(D)) then
+      {Workflow,Rules} = D,
+      M.put(Workflow, Rules)
+    end
+  end,
+
+  println(m=M),
+  calc(M,0,0).
+  %calc(M).
+
+to_rating([X,M,A,S]) = new_map(["x"=X,"m"=M,"a"=A,"s"=S]).
+
+calc(Rules) =>
+  N = 4000,
+  Xs = new_array(N),
+  Ms = new_array(N),
+  As = new_array(N),
+  Ss = new_array(N),
+  Vars = [Xs,Ms,As,Ss],
+  Vars :: 0..1,
+
+  Xmas = [X,M,A,S],
+  Xmas :: 1..N,
+
+  Rating = to_rating(Xmas),
+  should_accept(Rules, Rating),
+  solve([$max(X)],Xmas),
+  println(xmas=Xmas).
+
+
+  % foreach (I in 1..N)
+  %   println(I),
+  %   Xs[I] = cond(calc(Rules, 1, I), 1, 0),
+  %   Ms[I] = cond(calc(Rules, 2, I), 1, 0),
+  %   As[I] = cond(calc(Rules, 3, I), 1, 0),
+  %   Ss[I] = cond(calc(Rules, 4, I), 1, 0),
+  % end,
+
+  % println([sum(Vs) : Vs in [Xs,Ms,As,Ss]]),
+  % println(10 * sum(Xs) * sum(Ms) * sum(As) * sum(Ss)).
+
+% 2D 3x3 case
+% expr = (x > 1 /\ y > 1) \/ (x > 2 /\ y < 3)
+% 001
+% 011
+% 011
+% area = 5 ...
+% valid x = 0 + 2 + 3. But what about higher dimensions?
+% 3D 2x2x2?
+% (x > 1 /\ y < 2) \/ (z > 1 /\ x > 1)
+
+%z 2
+
+% 01
+% 01 z1
+%
+%    01
+%    00
+
+% x sols = forall y, forall z, g[z,y,x] % not feasible
+% CP: 176192000000000, 0.4s
+% SAT: 15320205000000, 4m12s
+% SMT: 15320205000000, 2m39s
+calc(Rules, K, V) :-
+  Vars = [X,M,A,S],
+  Vars :: 1..4000,
+  %Vars[K] #= V,
+
+  Rating = to_rating(Vars),
+  should_accept(Rules, Rating),
+  %println(Vars),
+  println(solve_all([], [Vars])).
+
+%dfs(M,Path,Key) = R =>
+
+should_accept(M,Rating) =>
+  Key = "in",
+  while (Key != "R" && Key != "A")
+    Rules = M.get(Key),
+    Applied = false,
+    foreach (Rule in Rules, break(Applied))
+      Result = handle_rule(Rating, Rule),
+      if Result != nop then
+        Key := Result,
+        Applied := true
+      end,
+    end,
+
+    if not(Applied) then
+      Key := Rules[Rules.len],
+    end,
+  end,
+  Key == "A".
+
+handle_rule(Rating,Rule) = R =>
+  Ts = Rule.split("<>:"),
+
+  R = nop,
+
+  if Ts.len > 1 then
+    Key = Ts[1],
+    Op = [C : C in Rule, membchk(C, "<>")],
+    Target = parse_term(Ts[2]),
+    Action = Ts[3],
+    Val = Rating.get(Key),
+    if Op == ">" then
+      R := cond(Val #> Target, Action, nop),
+    else
+      R := cond(Val #< Target, Action, nop),
+    end,
+  end.
+
+get_score(Rating) = sum(Rating.values).
+
+is_list([_|_]).
+
+process("") = [].
+process(['{'|Rest]) = R =>
+  S = Rest[1..Rest.len-1],
+  R = [{C, parse_term(N)} : Ns in S.split(","), [C,N] = Ns.split("=")].
+
+process(S) = R =>
+  [Name|[Rest|_]] = S.split("{"),
+  Inner = Rest[1..Rest.len-1].split(","),
+  R = {Name, Inner}.

@@ -1,0 +1,54 @@
+import util.
+
+main =>
+  Data = read_file_lines().map(process),
+  M = new_map(),
+  foreach (D in Data, D != [])
+    if not(is_list(D)) then
+      {Workflow,Rules} = D,
+      M.put(Workflow, Rules)
+    end
+  end,
+  % Initial ranges are 1-4000 for all four variables
+  println(dfs(M,"in",1,[{1,4000} : _ in 1..4])).
+
+dfs(M,"A",Pos,Ranges) = reduce(*,[Hi-Lo+1 : {Lo,Hi} in Ranges]). % done: take product of range sizes
+dfs(_,"R",_,_) = 0.
+dfs(M,Name,Pos,Ranges) = R =>
+  Rules = M.get(Name),
+  R = 0,
+  Rule = Rules[Pos],
+  Ts = Rule.split("<>:"),
+
+  if Ts.len > 1 then
+    Key = Ts[1],
+    Op = [C : C in Rule, membchk(C, "<>")],
+    Target = parse_term(Ts[2]),
+    Action = Ts[3],
+
+    Range_key = new_map(["x"=1,"m"=2,"a"=3,"s"=4]).get(Key),
+    Range_idx = zip(Ranges,1..4),
+
+    if Op == ">" then
+      R := R + dfs(M,Action,1,[{max(Lo, cond(I == Range_key, Target+1, Lo)), Hi} : {{Lo,Hi},I} in Range_idx]),
+      R := R + dfs(M,Name,Pos+1,[{Lo, min(Hi, cond(I == Range_key, Target, Hi))} : {{Lo,Hi},I} in Range_idx])
+    else
+      R := R + dfs(M,Action,1,[{Lo, min(Hi, cond(I == Range_key, Target-1, Hi))} : {{Lo,Hi},I} in Range_idx]),
+      R := R + dfs(M,Name,Pos+1,[{max(Lo, cond(I == Range_key, Target, Lo)), Hi} : {{Lo,Hi},I} in Range_idx])
+    end
+  else
+    Action = Ts[1],
+    R := R + dfs(M,Action,1,Ranges)
+  end.
+
+is_list([_|_]).
+
+process("") = [].
+process(['{'|Rest]) = R =>
+  S = Rest[1..Rest.len-1],
+  R = [{C, parse_term(N)} : Ns in S.split(","), [C,N] = Ns.split("=")].
+
+process(S) = R =>
+  [Name|[Rest|_]] = S.split("{"),
+  Inner = Rest[1..Rest.len-1].split(","),
+  R = {Name, Inner}.

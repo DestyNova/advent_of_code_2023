@@ -1,0 +1,93 @@
+import util.
+
+main =>
+  Data = read_file_lines().map(process),
+  M = new_map(),
+  Ratings = [],
+
+  foreach (D in Data, D != [])
+    if not(is_list(D)) then
+      {Workflow,Rules} = D,
+      M.put(Workflow, Rules)
+    end
+  end,
+
+  N = 4000,
+  Xs = new_array(N),
+  Ms = new_array(N),
+  As = new_array(N),
+  Ss = new_array(N),
+  foreach (I in 1..N)
+    Xs[I] := 1,
+    Ms[I] := 1,
+    As[I] := 1,
+    Ss[I] := 1,
+  end,
+  println(dfs(M,"in",1,Xs,Ms,As,Ss)).
+
+to_rating([X,M,A,S]) = new_map(["x"=X,"m"=M,"a"=A,"s"=S]).
+
+dfs(M,"A",Pos,Xs,Ms,As,Ss) = sum(Xs) * sum(Ms) * sum(As) * sum(Ss).
+dfs(M,"R",Pos,Xs,Ms,As,Ss) = 0.
+dfs(M,Name,Pos,Xs,Ms,As,Ss) = R =>
+  Rules = M.get(Name),
+  R = 0,
+  Rule = Rules[Pos],
+  Ts = Rule.split("<>:"),
+
+  if Ts.len > 1 then
+    Key = Ts[1],
+    Op = [C : C in Rule, membchk(C, "<>")],
+    Target = parse_term(Ts[2]),
+    Action = Ts[3],
+
+    Xs2 = Xs.copy_term, % forgiveness please...
+    Ms2 = Ms.copy_term,
+    As2 = As.copy_term,
+    Ss2 = Ss.copy_term,
+    Xs3 = Xs.copy_term,
+    Ms3 = Ms.copy_term,
+    As3 = As.copy_term,
+    Ss3 = Ss.copy_term,
+    Xmas = new_map(["x"=Xs2,"m"=Ms2,"a"=As2,"s"=Ss2]),
+    Xmas2 = new_map(["x"=Xs3,"m"=Ms3,"a"=As3,"s"=Ss3]),
+    To_reduce_pass = Xmas.get(Key),
+    To_reduce_fail = Xmas2.get(Key),
+
+    if Op == ">" then
+      foreach (I in 1..Target) % pass, exclude lower values
+        To_reduce_pass[I] := 0
+      end,
+      foreach (I in Target+1..4000) % fail, exclude higher values
+        To_reduce_fail[I] := 0
+      end,
+      R := R + dfs(M,Action,1,Xs2,Ms2,As2,Ss2), % check passed
+      R := R + dfs(M,Name,Pos+1,Xs3,Ms3,As3,Ss3) % check failed
+    else
+      To_reduce = Xmas.get(Key).copy_term,
+      foreach (I in 1..Target-1) % pass, exclude lower values
+        To_reduce_fail[I] := 0
+      end,
+      foreach (I in Target..4000) % fail, exclude higher values
+        To_reduce_pass[I] := 0
+      end,
+      R := R + dfs(M,Action,1,Xs2,Ms2,As2,Ss2), % check passed
+      R := R + dfs(M,Name,Pos+1,Xs3,Ms3,As3,Ss3) % check failed
+    end,
+
+  else
+    Action = Ts[1],
+    R := R + dfs(M,Action,1,Xs,Ms,As,Ss),
+  end.
+
+is_list([_|_]).
+
+process("") = [].
+process(['{'|Rest]) = R =>
+  S = Rest[1..Rest.len-1],
+  R = [{C, parse_term(N)} : Ns in S.split(","), [C,N] = Ns.split("=")].
+
+process(S) = R =>
+  [Name|[Rest|_]] = S.split("{"),
+  Inner = Rest[1..Rest.len-1].split(","),
+  R = {Name, Inner}.

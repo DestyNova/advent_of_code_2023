@@ -20,6 +20,12 @@ Anyway, while working on the Nim solution, the Picat version finished with the r
 1. Picat version: Instead of including the list of the previous 11 directions in the vertex definition, just store the count of consecutive moves, incrementing it by one when continuing straight ahead, and resetting it to one when changing direction. This seems really obvious in retrospect, but hey. That change reduced my Picat part 2 runtime to 23 seconds.
 2. Nim version: Don't include the current cost in the states we store in the visited set! Including it means the search can encounter loops that take a lot of time to break out of. We know there is no reason to ever visit the same grid tile more than once. Removing it dropped the runtime from around 5 minutes down to 548 ms. Pretty cool.
 
+# Back to Picat: Dijkstra / A*
+
+Afterwards, I made another Picat version `part2_dijkstra.pi` which replaces the `planner` module with a basic Dijkstra implementation built on Picat's `new_min_heap()`. This time we get the correct answer in around 2 minutes.
+
+I also tried A* in `part2_astar.pi` but it takes almost 4 minutes. I'm not really sure why -- maybe I'm doing it wrong, but it's basically the same as my Nim version which runs in half a second.
+
 ## Timings (with hyperfine)
 
 ### Part 2, Nim version

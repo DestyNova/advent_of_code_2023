@@ -16,14 +16,15 @@ My solutions for the [Advent of Code 2023](https://adventofcode.com/2023/) progr
 ───────────────────────────────────────────────────────────────────────────────
 Language                     Files       Lines     Blanks    Comments      Code
 ───────────────────────────────────────────────────────────────────────────────
-Picat                           44        1664        254          13      1397
-Markdown                        18         744        241           0       503
+Picat                           50        2156        334          48      1774
+Markdown                        20         834        279           0       555
 Nim                              1         117         24           0        93
 Plain Text                       1           6          0           0         6
+Solidity                         1           4          0           0         4
 ───────────────────────────────────────────────────────────────────────────────
-Total                           64        2531        519          13      1999
+Total                           73        3117        637          48      2432
 ───────────────────────────────────────────────────────────────────────────────
-Processed 95037 bytes, 0.095 megabytes (SI)
+Processed 114457 bytes, 0.114 megabytes (SI)
 ───────────────────────────────────────────────────────────────────────────────
 ```
 
@@ -47,7 +48,7 @@ Processed 95037 bytes, 0.095 megabytes (SI)
 * Day 16: [The Floor Will Be Lava](https://github.com/DestyNova/advent_of_code_2023/blob/main/16)
 * Day 17: [Clumsy Crucible](https://github.com/DestyNova/advent_of_code_2023/blob/main/17)
 * Day 18: [Lavaduct Lagoon](https://github.com/DestyNova/advent_of_code_2023/blob/main/18)
-* Day 19: [???](https://github.com/DestyNova/advent_of_code_2023/blob/main/19)
+* Day 19: [Aplenty](https://github.com/DestyNova/advent_of_code_2023/blob/main/19)
 * Day 20: [???](https://github.com/DestyNova/advent_of_code_2023/blob/main/20)
 * Day 21: [???](https://github.com/DestyNova/advent_of_code_2023/blob/main/21)
 * Day 22: [???](https://github.com/DestyNova/advent_of_code_2023/blob/main/22)
