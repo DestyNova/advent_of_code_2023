@@ -1,0 +1,74 @@
+import math.
+
+main =>
+%     a. count max reachable from S (odd and parity) => hardcode 7566 evens, 7509 odds for now
+  % how far can we go in one direction before encountering a partial grid?
+  Steps = 26501365,
+  Length = 131,
+  Odds = 7509,
+  Evens = 7566,
+  % partials have 7509 or 7566 * 4 possible reachability values
+  % so 4*(7509+7566) means
+  printf("Possible partial cases to consider: %d\n", 4*(7509+7566)),
+  % part 1 took about 250 ms for BFS, so that potentially means...
+  printf("Expected runtime to populate table: %d seconds\n", (7509+7566)),
+  % 5 hours??? cmon. Either it's faster than that in practice, or this is the wrong way
+  % or maybe there's a regular pattern (it is a circle after all... sort of) so DP will work?
+  % also, how do I enumerate all the partial grids?
+
+  Odd = true,
+
+  Odd_count = 0,
+  Even_count = 0,
+  Cont = true,
+  while (Cont)
+    Num_cells = cond(Odd, Odds, Evens),
+    if Steps > Num_cells then
+      Steps := Steps - Length,
+      if Odd then
+        Odd_count := Odd_count + 1,
+      else
+        Even_count := Even_count + 1,
+      Odd := not(Odd),
+    else
+      Cont := false
+    end
+  end,
+  printf("First partial grid found with %d steps remaining.\n", Steps),
+  printf("Walked past %d full odd grids, %d evens.\n", Odd_count, Even_count),
+  printf("1 line of megagrid has %d full odd grids and %d evens.\n", Odd_count*2-1, 2*Even_count),
+  printf("Alternate line has %d full odd grids and %d evens.\n", Odd_count*2, 2*Even_count-1),
+  Line_width = 2*(Odd_count + Even_count) - 1,
+  printf("Total full grids in covering square is %d\n", Line_width**2),
+  % r = 1 full grids = 1 odd, 4 even (starting on odd = 5
+  % r = 2 full grids = 10 odd, 4 even
+  % r = 3 full grids = 21 odds, 16 evens? = 37 (36+1?)
+  % k hang on... square inscribed within circle has the same diagonal length as the circle's diameter
+  % so Pythagoras: d = sqrt(1**2 + 1**2) = sqrt(2)
+  % thus side length is (d^2 / 2)
+  % so... a circle of radius 
+  printf("Therefore circle includes %d full odd grids, %d evens.\n", Odd_count, Even_count),
+  printf("Can potentially still move straight ahead / left right to another %d incomplete grids.\n", Steps // Length),
+
+  foreach(R in [1,2,3,4,5,7031])
+    show_area_and_circ(R),
+    show_area_and_circ(R+0.5),
+  end,
+
+  %time(slow), % 3s -> 202244 squared... that's full grids tho
+  nl.
+
+slow() =>
+  foreach (I in 1..400975921)
+    X = 1 + 1
+  end.
+
+show_area_and_circ(R) =>
+  printf("radius %w, area = %f\n", R, 2*pi*R**2),
+  Side = floor(sqrt((2*(R+0.5))**2 / 2)),
+  printf("floored side length of square in circle of radius %w = %w\n", R, Side),
+  printf("squared int sides: %d\n", Side**2),
+  printf("square of side length %w has diagonal of %w\n", R, sqrt(R+R)),
+  printf("square of side length %w sits in circle of radius %w\n", R, sqrt(2*R**2)/2),
+  printf("ratio of circle to square area: %w\n",sqrt(pi*R**2)/Side**2),
+  nl.

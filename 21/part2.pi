@@ -1,0 +1,179 @@
+import util.
+import mip.
+
+main =>
+  G = read_file_lines(),
+  MinX = 1,
+  MaxX = G[1].len,
+  MinY = 1,
+  MaxY = G.len,
+  W = MaxX - MinX + 1,
+  H = MaxY - MinY + 1,
+  Total_steps = 26501365,
+  Offset = Total_steps mod W,
+
+  regress_quadratic([{0, -35}, {1, -18}, {2, 11}], A1, B1, C1),
+  printf("quad: %w\n", [A1,B1,C1]),
+  printf("grid size: %d %d %d\n", W, H, Offset),
+  {X0,Y0} = {0,0},
+  foreach (J in 1..H, I in 1..W, break(X0 > 0))
+    if G[J,I] == 'S' then
+      X0 := I,
+      Y0 := J
+    end,
+  end,
+  Explored = [explore_partial_grid(G,W,0,X0,Y0,0,W*W*4), explore_partial_grid(G,W,0,X0,Y0,0,W*W*4-1)],
+  % % fudge a guess for the maximum steps required to cover a room
+  Explore_steps = max([E*3 : E in Explored]), % genius
+  printf("Maximum estimated steps to explore any grid: %d\n", Explore_steps),
+
+  % start with reachability from S in grid 0, which technically different to the other cases but not
+  % really...?
+  % Sample = [{Steps+1, count_reachable(G,W,X0,Y0,Offset,Explored,Explore_steps,Steps)} : I in 0..2, Steps = W*I + Offset-1],
+  Sample = [{65,3787},{196,33976},{327,94315}], % testing
+  % 65,196,327
+  % 3787,30158,86679
+  % 616951031934587 too low
+  % 132661908583337 -- too low
+  % 133807808408998 -- must also be too low
+  % 616951035575948 -- too low
+  % 616951804315987
+  %Sample = [{65,3787},{196,19787},{327,42270}], % testing
+  %Sample = [{65,3787},{196,30158},{327,86679},{458,173350}], % testing
+  %Sample = [{65,3791},{262,59847},{327,93223}], % testing, not mine
+  %regress_polynomial(Sample, A, B, C),
+  regress_quadratic(Sample, A, B, C),
+  N = Total_steps, % 3748
+  Prediction = round(A*N*N + B*N + C),
+  printf("%d\n", Prediction).
+  % println(count_reachable(G,W,X0,Y0,Offset,Explored,Explore_steps,Total_steps)).
+
+regress_polynomial(Sample,A,B,C) =>
+  printf("Sample for polynomial fitting: %w\n", Sample),
+  Vars = [A,B,C],
+  Vars :: -2**60..2**60,
+  
+  foreach ({Steps, Reachable} in Sample.take(3))
+    printf("Fitting %w %w\n", Steps, Reachable),
+    %A*Steps*Steps + B*Steps + C #= Reachable,
+    Result #= A*Steps*Steps + B*Steps + C - Reachable,
+    Result :: -1..1
+  end,
+
+  solve([], [A,B,C]),
+  println(sol=Vars).
+
+regress_quadratic([{X1,Y1},{X2,Y2},{X3,Y3}], A, B, C) =>
+  A = (Y3-2*Y2+Y1) / (X3**2 - 2*X2**2 + X1**2),
+  B = (Y3 - Y2 -A*X3**2 + 2*A*X2**2) / (X3 - X2),
+  C = Y3 - A*X3**2 - B*X3**2.
+
+printG(G) =>
+  foreach (R in G)
+    println(R)
+  end.
+
+count_reachable(G, W, X0, Y0, Offset, Explored, Explore_steps, Total_steps) = Count =>
+  printf("Running %d steps.\n", Total_steps),
+  Count = 0,
+  Col = 0,
+
+  % how many cells can be reached within a grid, for each parity (even or odd steps remaining)?
+  Max_grids_away = ceiling(Total_steps / W),
+  printf("max grids away %d\n", Max_grids_away),
+
+  foreach(D in -Max_grids_away..Max_grids_away)
+
+    % printf("Col %10d, %3w%%\n", Col, Col*50//Max_grids_away),
+    Col := Col + 1,
+    garbage_collect(1000000000),
+    Steps_to_here = abs(W*D),
+    Remaining_steps = Total_steps - Steps_to_here,
+    % printf("#### Grid %d, Steps to get here: %d, remaining steps: %d, count: %d\n", D, Steps_to_here, Remaining_steps, Count),
+
+    % how many grids up and down can be fully explored?
+    % 1 grids = 0 (0 as in whatever this parity is)
+    % 2 grids = 1 0 1
+    % 3 grids = 0 1 0 1 0
+    % 4 grids = 1 0 1 0 1 0 1
+    % this parity = cond(even(Full_grids), Full_grids-1, Full_grids)
+    % 
+    % opposite parity = cond(odd(Full_grids), Full_grids-1, Full_grids)
+     Full_grids = Remaining_steps // Explore_steps,
+     Full_same = Full_grids+(Full_grids mod 2)-1,
+     Full_flipped = Full_grids-(Full_grids mod 2),
+     % printf("full same: %d, full flipped: %d\n", Full_same, Full_flipped),
+
+     if Full_grids > 0 && (min(Full_same, Full_flipped) < 0) then
+       printf("Bad parity. Full grids: %d, by parity: %w\n", Full_grids, [Full_same, Full_flipped]),
+       exit()
+     end,
+
+     if Full_grids > 0 then
+       %printf("Count: %d ", Count),
+       Count := Count + Full_same * Explored[Remaining_steps mod 2 + 1],
+       %printf(", with same parity grids added: %d ", Count),
+       Count := Count + Full_flipped * Explored[3 - (Remaining_steps mod 2 + 1)],
+       %printf(", with flipped parity grids added: %d ", Count),
+     else
+     % handle current partial grid (Y displacement of 0)
+     %println("Current grid is partial"),
+      Count := Count + explore_partial_grid(G,W,D,X0,Y0,0,Total_steps),
+     end,
+    % printf("Full grids in this column: %d. ", Full_grids),
+    % printf("Steps to get to centre of grid %d: %d, parity: %w\n", D, Steps_to_here, Remaining_steps mod 2),
+
+    % let's walk...
+    Y_dist = 1,
+    Iter = 1,
+    while (Remaining_steps - Y_dist * W + 7 > 0)
+      %println("Walking..."),
+      Count := Count + explore_partial_grid(G,W,D,X0,Y0,Y_dist*W,Total_steps),
+      Count := Count + explore_partial_grid(G,W,D,X0,Y0,-Y_dist*W,Total_steps),
+      Y_dist := Y_dist + 1,
+    end,
+  end,
+
+  println(res=Count).
+
+% Don't actually change Y coordinate when we go north/south; just keep track for step counting
+explore_partial_grid(G,W,D,X0,Y0,Y_disp,Total_steps) = Count =>
+  Crossing_dist = W // 2,
+  Reachable = new_set(),
+  Sidesteps = [Crossing_dist, -Crossing_dist, 0],
+  Start_points = zip(1..9, [{A,B} : A in Sidesteps, B in Sidesteps]),
+  % printf("FFS: %w\n", Start_points),
+  foreach ({I,{X1,Y1}} in Start_points)
+    %printf("D: %d W: %d C0: {%d,%d} C1: {%d,%d} Y_disp: %d\n", D, W, X0, Y0, X1, Y1, Y_disp),
+    Displacement = abs(D*W+X1)+abs(Y1+Y_disp),
+    Steps = Total_steps - Displacement, % Manhattan distance from S
+    if Steps >= 0 then
+      bfs(G,W,Reachable,[{X0+X1,Y0+Y1,Steps}]),
+    end
+  end,
+  %println(well={Seen,X0}),
+  Count = Reachable.size.
+  %printf("Explored tiles: %d\n", Count).
+
+% TODO: make a note about avoiding backtrackable predicates (:- / ?=>) where possible due to
+% massive memory / speed cost! this was at least 1000x slower than it should have been
+bfs(G, W, Reachable, Q) => bfs(G,W,new_set(),Reachable,Q).
+bfs(G, _, Seen, Reachable, []) => true.
+bfs(G, W, Seen, Reachable, [{X,Y,_}|Xs]), Seen.has_key({X,Y}) =>
+  bfs(G, W, Seen, Reachable, Xs).
+bfs(G, W, Seen, Reachable, [{X,Y,Steps}|Xs]) =>
+  Seen.put({X,Y}),
+  if Steps mod 2 == 0 then
+    Reachable.put({X,Y}),
+    %G[Y,X] := 'X'
+  end,
+  Moves = moves(G, X, Y),
+  Xs2 = Xs ++ [{I,J,Steps-1} : Steps > 0, {I,J} in Moves, I >= 1, I <= W, J >= 1, J <= W, G[J,I] != '#'],
+  bfs(G, W, Seen, Reachable, Xs2).
+
+moves(G, X, Y) = [{X+I,Y+J} : Dir in ["U","R","D","L"], {I,J} = get_offset(Dir)].
+
+get_offset("U") = {0,-1}.
+get_offset("R") = {1,0}.
+get_offset("D") = {0,1}.
+get_offset("L") = {-1,0}.

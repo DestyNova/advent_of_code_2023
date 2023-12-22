@@ -1,0 +1,77 @@
+import util.
+
+% flip-flop = %, low = toggle on/off + send hi/lo pulse, high = ignore
+% conjunction = &, remember latest pulse from each connect module. if all high, send lo else hi
+% broadcaster, copy incoming pulse to all connected dests
+% button, send lo to broadcaster, must wait until processing stopped
+% pulses processed in sending order => Q
+% inv is conjunction that's really a not
+
+main =>
+  M = new_map(),
+  parse_all(read_file_lines(),M),
+  connect_inputs(M),
+
+  Ins = new_map(),
+  foreach (Node=V in M)
+    {Type, Node_ins, Node_outs, 0} = V,
+    foreach (Dest in Node_outs)
+      Ins.put(Dest, [Node|Ins.get(Dest, [])])
+    end
+  end,
+  println(Ins),
+  member(Depth, 1..32),
+  dfs(M, Ins, "broadcaster", "rx", 3, Depth),
+  println(found_at=Depth).
+
+dfs(M, Ins, Key, Target, Max_depth, Depth) :- dfs(M, Ins, Key, Target, Max_depth, new_set(), 1, D).
+dfs(M, Ins, Key, Target, Max_depth, Seen, D, Depth) =>
+  {Type, Inputs, Dests, State} = M.get(Key, {none, [], [], 0}),
+  printf("%" ++ to_string(D*2) ++"d  %s [%w], input from: %w", D, Key, Type, Ins.get(Key)),
+  if Key == Target then
+    printf("\n##################\n"),
+    Depth = D
+  elseif Seen.has_key(Key) then
+    printf("\n%" ++ to_string((D+1)*2) ++ "s...\n", ""),
+  else
+    nl,
+    Seen.put(Key),
+    _ = [0 : Dest in Dests, dfs(M, Ins, Dest, Target, Max_depth, Seen, D+1, D2)],
+  end.
+
+connect_inputs(M) =>
+  foreach (Src=V in M)
+    {_, _, Dests, 0} = V,
+    foreach (D in Dests)
+      if not(M.has_key(D)) then
+        printf("Untyped destination module: %s, adding dummy entry\n", D),
+        M.put(D, {none, Src, [], 0})
+      else
+        {Type, Inputs, Dests2, 0} = M.get(D),
+        Inputs.put(Src, 0),
+        M.put(D, {Type, Inputs, Dests2, 0})
+      end
+    end
+  end.
+
+parse_all(Lines,M) =>
+  foreach (L in Lines)
+    parse_line(L,M)
+  end,
+  M.put("button", {none, new_map(), ["broadcaster"], 0}).
+
+parse_line(S,M) =>
+  Ns = S.split(" ").map(strip),
+  [Src_spec,"->"|Dests_spec] = Ns,
+  Dests = [[C : C in Dest, C != ','] : Dest in Dests_spec],
+  {Src,Src_type} = get_source_type(Src_spec),
+  println(src=Src),
+  println(dests=Dests),
+  M.put(Src, {Src_type, new_map(), Dests, 0}).
+
+get_source_key(none) = 1.
+get_source_key(flip) = 2.
+get_source_key(conjunction) = 3.
+get_source_type(['%'|Src]) = {Src,flip}.
+get_source_type(['&'|Src]) = {Src,conjunction}.
+get_source_type(Src) = {Src,none}.

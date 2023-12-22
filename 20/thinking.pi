@@ -1,0 +1,10 @@
+import util.
+import ordset.
+
+main =>
+  A=7838-3919, B=8102-4051, C=7814-3907, D=7522-3761, % to be sure about the loop lengths...
+  X=lcm(A,B), Y=lcm(C,D), Z=lcm(X,Y),
+  println(A*B*C*D),
+  println(Z).        % no common factors!
+
+lcm(A,B)=A*B//gcd(A,B).

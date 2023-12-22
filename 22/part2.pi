@@ -1,0 +1,164 @@
+import util.
+
+main =>
+  Blocks = new_map(),
+  Coords = new_map(),
+  parse_all(Blocks, Coords, read_file_lines()),
+  println([Blocks, Coords]),
+
+  % 393 too low
+  % 876 too high, what the fuck
+  I = 1,
+  Falling = true,
+  while (Falling)
+    Moved = step(Blocks, Coords),
+    printf("%3d: %d blocks moved.\n", I, Moved),
+    if Moved == 0 then
+      Falling := false
+    end,
+    I := I + 1,
+  end,
+
+  println(blocks=Blocks.size),
+  println(Blocks),
+
+  {Critical,Supporting} = get_delete_tree(Blocks, Coords),
+  println(Critical),
+  println(Supporting),
+
+  % recursively, starting at highest node... (optional?)
+  % foreach ancestor who is the only one on that level, increment that ancestor's count?
+  Boom = get_ancestor_counts(Supporting),
+  println(Boom.values.sum).
+
+get_ancestor_counts(G) = Boom =>
+  Ancestors = new_map(),
+  foreach (K=V in G)
+    %println(testing={K,V}),
+    foreach (Child in V.keys)
+      Parents = Ancestors.get(Child, new_set()),
+      Parents.put(K),
+      Ancestors.put(Child, Parents)
+    end,
+  end,
+  %println(ancestors=Ancestors),
+
+  Boom = new_map(),
+  foreach (K=V in G)
+    % for each K, number of children whose only other supports are in my ancestors and children?
+    println(find_sole_supports=K),
+    garbage_collect(500000000),
+    My_ancestors = get_descendants(K, Ancestors),
+    Descendants = get_descendants(K,G),
+    Count = 0,
+    %println(descendants=Descendants),
+    foreach (Child in Descendants.keys)
+      Supports = get_descendants(Child, Ancestors),
+      %printf("Looking at node %w's child %w whose supports are %w\n", K, Child, Supports),
+      %printf("%w's ancestors: %w\n", K, My_ancestors),
+      Parallel_supports = [S : S in Supports.keys, K != S, not(has_key(My_ancestors, S)), not(has_key(Descendants, S))],
+      if len(Parallel_supports) == 0 then
+        %printf("Node %w will fall if %w is removed.\n", Child, K),
+        Count := Count + 1
+      %else
+        %println(parallel=Parallel_supports)
+      end
+    end,
+    %println(k_count={K,Count}),
+    Boom.put(K, Count)
+  end.
+
+table
+get_descendants(Node,G) = get_descendants_slow(Node,G).new_set().
+get_descendants_slow(Node,G) = R =>
+  %println(node=Node),
+  Children = G.get(Node, new_set()).keys,
+  %println(children=Children),
+  Descendants = flatten([get_descendants_slow(Child, G) : Child in Children]),
+  %println(desc=Descendants),
+  R = Children ++ Descendants.
+
+% for each block
+% get its pieces
+% find who is supported by it
+% count the nodes in the tree
+get_delete_tree(Blocks, Coords) = R =>
+  Supporting = new_map(),
+  Critical = new_map(),
+  foreach(Id in Blocks.keys)
+    Supporting.put(Id, new_set()),
+    Critical.put(Id, new_set())
+  end,
+
+  foreach (Id=Block in Blocks)
+    Pieces = get_pieces(Block),
+    Below = get_supported(Id, Pieces, Coords),
+    foreach (Key_block=_ in Below)
+      Supporting.get(Key_block).put(Id),
+      %Supporting.put(Key_block, [Id|Supporting.get(Key_block)]),
+      if Below.size == 1 then
+        Critical.get(Key_block).put(Id),
+      else
+        printf("block %w with pieces %w on ground or supported by multiple: %w\n", Id, Pieces, Below),
+      end
+    end
+  end,
+  % println(supporting=Supporting),
+  R = {Critical,Supporting}.
+  
+get_pieces({C1,C2}) = [{X,Y,Z} : X in C1[1]..C2[1], Y in C1[2]..C2[2], Z in C1[3]..C2[3]].
+
+step(Blocks, Coords) = Moved =>
+  Moved = 0,
+  foreach (Id=Block in Blocks)
+    % printf("id: %d pos: %w\n", Id, Block),
+    Pieces = get_pieces(Block),
+
+    [] = [Piece : Piece in Pieces, Piece[3] < 1], % no piece should be below the ground
+    Touching_ground = [Piece : Piece in Pieces, Piece[3] == 1],
+    Below = get_supported(Id, Pieces, Coords),
+
+    % printf("blocks touching ground: %w, blocks below: %w\n", Touching_ground, Below),
+
+    if Touching_ground.len == 0 && Below.size == 0 then
+      % println(can_fall),
+      % "delete" old block coords
+      foreach ({X,Y,Z} in Pieces)
+        Coords.put({X,Y,Z}, 0),
+      end,
+      foreach ({X,Y,Z} in Pieces)
+        Coords.put({X,Y,Z-1}, Id),
+      end,
+
+      % update block info
+      [New_c1,New_c2] = [{X,Y,Z-1} : {X,Y,Z} in Block],
+      Blocks.put(Id, {New_c1, New_c2}),
+      Moved := Moved + 1
+    end,
+  end.
+
+get_supported(Id, Pieces, Coords) = R =>
+  R = new_set(),
+  foreach ({X,Y,Z} in Pieces)
+    Below = Coords.get({X,Y,Z-1}, 0),
+    if Below > 0 && Below != Id then
+      R.put(Below)
+    end
+  end.
+
+parse_all(Blocks,Coords,Ls) => parse_all(Blocks, Coords, Ls, 1).
+parse_all(Blocks,Coords,[],_) => true.
+parse_all(Blocks,Coords,[L|Lines],I) =>
+  [A,B] = [N.map(parse_term) : N in [Ns.split(",") : Ns in L.split("~")]],
+  C1 = A.to_array,
+  C2 = B.to_array,
+  Blocks.put(I,{C1,C2}),
+  foreach (X in C1[1]..C2[1], Y in C1[2]..C2[2], Z in C1[3]..C2[3])
+    Coords.put({X,Y,Z}, I),
+  end,
+  parse_all(Blocks,Coords,Lines,I+1).
+
+get_offset("U") = {0,-1}.
+get_offset("R") = {1,0}.
+get_offset("D") = {0,1}.
+get_offset("L") = {-1,0}.

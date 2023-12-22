@@ -1,0 +1,56 @@
+import util.
+
+main =>
+  G = read_file_lines(),
+  MinX = 1,
+  MaxX = G[1].len,
+  MinY = 1,
+  MaxY = G.len,
+  W = MaxX - MinX + 1,
+  H = MaxY - MinY + 1,
+
+  Seen = new_set(),
+  {X0,Y0} = {0,0},
+  foreach (J in 1..H, I in 1..W, break(X0 > 0))
+    if G[J,I] == 'S' then
+      X0 := I,
+      Y0 := J
+    end,
+  end,
+  get_global_map(g1).put(count,0),
+  % 42 evens, 39 odds (sample)
+  % 7566 evens, 7509 odds
+  % sample2, 100 steps: 8699, 101 steps: 8960
+  Sample = [{65,3787},{196,33976},{327,94315}], % testing
+  bfs(G, MinX, MaxX, MinY, MaxY, Seen, [{X0,Y0,196}]),
+  println(wat),
+  %printG(G),
+  println(get_global_map(g1).get(count)).
+
+printG(G) =>
+  foreach (R in G)
+    println(R)
+  end.
+
+bfs(G, _, _, _, _, Seen, []) => true.
+bfs(G, MinX, MaxX, MinY, MaxY, Seen, [{X,Y,_}|Xs]), Seen.has_key({X,Y}) =>
+  bfs(G, MinX, MaxX, MinY, MaxY, Seen, Xs).
+
+bfs(G, MinX, MaxX, MinY, MaxY, Seen, [{X,Y,Steps}|Xs]) =>
+  %println({X,Y,Steps}),
+  Seen.put({X,Y}),
+  if Steps mod 2 == 0 then
+    Count = get_global_map(g1).get(count),
+    get_global_map(g1).put(count,Count+1), % mmm globals
+    G[Y,X] := 'O'
+  end,
+  Moves = moves(G, X, Y),
+  Xs2 = Xs ++ [{I,J,Steps-1} : Steps > 0, {I,J} in Moves, I >= MinX, I <= MaxX, J >= MinY, J <= MaxY, G[J,I] == '.'],
+  bfs(G, MinX, MaxX, MinY, MaxY, Seen, Xs2).
+
+moves(G, X, Y) = [{X+I,Y+J} : Dir in ["U","R","D","L"], {I,J} = get_offset(Dir)].
+
+get_offset("U") = {0,-1}.
+get_offset("R") = {1,0}.
+get_offset("D") = {0,1}.
+get_offset("L") = {-1,0}.

@@ -1,0 +1,94 @@
+import util.
+
+% flip-flop = %, low = toggle on/off + send hi/lo pulse, high = ignore
+% conjunction = &, remember latest pulse from each connect module. if all high, send lo else hi
+% broadcaster, copy incoming pulse to all connected dests
+% button, send lo to broadcaster, must wait until processing stopped
+% pulses processed in sending order => Q
+% inv is conjunction that's really a not
+
+main =>
+  M = new_map(),
+  parse_all(read_file_lines(),M),
+  println(M),
+  println(connect),
+  connect_inputs(M),
+  println(process),
+  Count_lo = 0,
+  Count_hi = 0,
+  foreach (I in 1..1000)
+    %println("----"),
+    {Lo,Hi} = process([{"button","broadcaster",0}],M,0,0),
+    Count_lo := Count_lo + Lo,
+    Count_hi := Count_hi + Hi,
+  end,
+  println(counts={Count_lo, Count_hi}),
+  printf("Final count: %w\n", Count_lo * Count_hi).
+
+connect_inputs(M) =>
+  foreach (Src=V in M)
+    {_, _, Dests, 0} = V,
+    foreach (D in Dests)
+      if not(M.has_key(D)) then
+        printf("Untyped destination module: %s\n", D)
+      else
+        {Type, Inputs, Dests2, 0} = M.get(D),
+        Inputs.put(Src, 0),
+        M.put(D, {Type, Inputs, Dests2, 0})
+      end
+    end
+  end.
+
+process([],M,Count_lo,Count_hi) = {Count_lo,Count_hi}.
+process([{Src,Dest,X}|Q],M,Count_lo,Count_hi) = R =>
+  Pulses = [],
+  {Lo,Hi} = cond(X == 1, {0,1}, {1,0}),
+  %printf("%s -%w-> %s\n", Src, X, Dest),
+
+  {Type, Inputs, Dests, State} = M.get(Dest, {none, [], [], 0}),
+  %println(handling={Src,cond(X==0,low,high),Dest,X,Type,Dests,State}),
+
+  Output = none,
+  if Type == conjunction then
+    %printf("conj %s inputs: %w\n", Dest, Inputs),
+    Inputs.put(Src,X),
+    Output := cond((fold(*,1,Inputs.values) == 1), 0, 1),
+    %println(conj_output=Output)
+  elseif Type == flip then
+    if X == 0 then
+      New_state = 1 - State,
+      Output := New_state,
+      M.put(Dest, {Type, Inputs, Dests, New_state})
+    end
+  else
+    Output := X
+  end,
+
+  if Output != none then
+    foreach (D in Dests)
+      Pulses := [{Dest,D,Output} | Pulses]
+    end,
+    Pulses := Pulses.reverse
+  end,
+  Q2 = Q ++ Pulses,
+  %println(queue=Q2),
+  R = process(Q2, M, Count_lo+Lo, Count_hi+Hi).
+
+parse_all(Lines,M) =>
+  foreach (L in Lines)
+    parse_line(L,M)
+  end,
+  M.put("button", {none, new_map(), ["broadcaster"], 0}).
+
+parse_line(S,M) =>
+  Ns = S.split(" ").map(strip),
+  [Src_spec,"->"|Dests_spec] = Ns,
+  Dests = [[C : C in Dest, C != ','] : Dest in Dests_spec],
+  {Src,Src_type} = get_source_type(Src_spec),
+  println(src=Src),
+  println(dests=Dests),
+  M.put(Src, {Src_type, new_map(), Dests, 0}).
+
+get_source_type(['%'|Src]) = {Src,flip}.
+get_source_type(['&'|Src]) = {Src,conjunction}.
+get_source_type(Src) = {Src,none}.

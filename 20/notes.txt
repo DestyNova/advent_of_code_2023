@@ -1,0 +1,84 @@
+rx = not(gf)
+
+100000 steps
+
+0 gf
+24 jh 24 mh 25 jt 25 rn 25 rv 25 vk 26 pp 26 pz
+49 vh 50 nk 51 fk 53 kd
+98 cj 101 xk 102 mv 106 ct
+197 nr 203 jm 204 kn 212 kt
+394 gv 398 jc 407 lp 409 fn
+789 xm 790 vp 793 nx 797 mb
+1568 ph 1579 bc 1581 fb 1586 xc
+3134 jf 3137 dx 3138 zb 3147 ff
+6251 dt 6269 xb 6270 hr 6274 tx
+12503 lj 12515 hx 12515 sk 12522 hp
+25006 fx 25006 qt 25006 th 25019 vr
+50012 bx 50012 jq 50012 nv 50013 jp
+110579 pg 152364 sp 159387 qs 189863 sv
+
+
+2000000:
+57
+0 gf
+493 jh 493 mh 510 jt 510 vk 511 rn 511 rv 531 pp 531 pz
+987 vh 1020 nk 1023 fk 1063 kd
+1974 cj 2041 xk 2047 mv 2126 ct
+3949 nr 4082 jm 4094 kn 4253 kt
+7899 gv 7976 jc 8165 lp 8189 fn
+15798 xm 15820 vp 15868 nx 15952 mb
+31374 ph 31596 bc 31640 fb 31737 xc
+62700 jf 62748 dx 62770 zb 62963 ff
+125031 dt 125400 xb 125415 hr 125497 tx
+250063 lj 250308 hx 250319 sk 250464 hp
+500123 th 500127 fx 500127 qt 500398 vr
+1000246 nv 1000255 bx 1000255 jq 1000265 jp
+2211639 pg 3047345 sp 3187849 qs 3797393 sv
+
+looking for &gf -> rx
+
+gf triggered by [sv sp pg qs], need to find modulo of them
+
+every 1:
+  %nv from broadcaster, &mh
+    mh (never?)
+      &qs ?
+      %bc 32
+      %xb 8
+      %hx 4
+      %nv 1
+    th every 2
+  %bx from broadcaster, &rn
+    rn
+    fx
+  %jq from broadcaster, &jt
+    jt
+    qt
+  %jp from broadcaster, &pz
+    pz
+    vr
+
+example again
+  broadcaster -> a
+  %a -> inv, con
+  &inv -> b
+  %b -> con
+  &con -> output
+
+output triggers on con.
+con triggers on and(a, not(b))
+inv = not(a)
+a = broadcaster (off), 
+
+% what's freq of gf? from [sv sp pg qs] and sp?
+
+[3919,7838,11757,15676]
+
+[52654,3919] GCD = 206351026
+
+A=7838-3919, B=8102-4051, C=7814-3907, D=7522-3761
+
+A 3919
+B 4051
+C 3907
+D 3761

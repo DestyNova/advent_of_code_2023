@@ -1,0 +1,196 @@
+import util.
+import ordset.
+
+% flip-flop = %, low = toggle on/off + send hi/lo pulse, high = ignore
+% conjunction = &, remember latest pulse from each connect module. if all high, send lo else hi
+% broadcaster, copy incoming pulse to all connected dests
+% button, send lo to broadcaster, must wait until processing stopped
+% pulses processed in sending order => Q
+% inv is conjunction that's really a not
+
+main =>
+  M = new_map(),
+  parse_all(read_file_lines(),M),
+  println(M),
+  println(connect),
+  connect_inputs(M),
+  println(process),
+  Count_lo = 0,
+  Count_hi = 0,
+  I = 0,
+  printf("######## %d\n", I),
+  %print_state(M),
+  Changes = new_map(),
+  Iters = 12000,
+  while (I < Iters && true)
+    if I mod 25000 == 0 then
+      println(I),
+      garbage_collect(1000000000)
+    end,
+    I := I + 1,
+    _ = process([{"button","broadcaster",0}],M,Changes,0,I),
+    %printf("######## %d\n", I),
+    %print_state(M),
+  end,
+  printf("=========\n%d:\n", I),
+
+  % exit(),
+  %printf("Num changed states: %d %w:\n", Changes.size, [C=Reg : Reg=C in Changes].sort),
+  [As,Bs,Cs,Ds] = [Changes.get(S,[]).reverse : S in "_sv _qs _sp _pg".split],
+  Xs = [As,Bs,Cs,Ds],
+  Names = "sv qs sp pg".split,
+  %println(Xs),
+  By_iter = new_array(Iters,4),
+  foreach (K in 1..4)
+    foreach ({J,X} in Xs[K])
+      Ls = By_iter[J,K],
+      if nonvar(Ls) then
+        By_iter[J,K] := Ls ++ [X],
+      else
+        By_iter[J,K] := [X]
+      end,
+    end,
+  end,
+  %println(By_iter),
+
+  % 2 2 2 16
+  foreach (J in 1..Iters)
+    Row = [cond(var(X), ".  .", to_string(X)) : X in By_iter[J]],
+    if len([_ : V in Row, V != ".  ."]) > 0 then
+      printf("%6d: %20s %20s %20s %20s\n",J,Row[1],Row[2],Row[3],Row[4])
+    end,
+  end,
+  println(bail),
+  exit(), % BYE
+  I := 0,
+  foreach (J in 1..Iters)
+    if I mod 1000 == 0 then
+      println(I),
+      garbage_collect(1000000000)
+    end,
+    Match = false,
+    I := I + 1,
+    foreach ({L,R} in [{1,2},{1,3},{1,4},{2,3},{2,4},{3,4}], {P1,P2} = {By_iter[J,L],By_iter[J,R]})
+      if intersection(P1,P2).len > 0 then
+        printf("Iteration %d: ", J),
+        foreach (K in 1..4)
+          Row = Xs[K],
+          %println(row=Row),
+          Vals = [X : {J,X} in Row],
+          printf("%d: %w ", K, cond(Vals.len == 0, "----", Vals))
+        end,
+        nl,
+      end,
+    end,
+  end,
+  % Xs = [join(Changes.get(S).reverse.map(to_string)) : S in "_sv _qs _sp _pg".split],
+  % FD = open("nums.txt", write),
+  % foreach (Line in Xs)
+  %   write_char(FD, Line ++ "\n"),
+  % end,
+  % close(FD),
+  printf("Didn't find rx in %w steps.\n", I).
+
+process([],M,Changes,Step,Iter) = 0.
+process([{Src,Dest,X}|Q],M,Changes,Step,Iter) = R =>
+  %println(q=Q.len),
+  Pulses = [],
+  %printf("%s -%w-> %s\n", Src, X, Dest),
+
+  {Type, Inputs, Dests, State} = M.get(Dest, {none, [], [], 0}),
+  %println(handling={Src,cond(X==0,low,high),Dest,X,Type,Dests,State}),
+
+  if Dest == "rx" && X == 0 then
+    printf("FOUND IT AT %d\n", Iter),
+    exit()
+  end,
+  Output = none,
+  if Type == conjunction then
+    Inputs.put(Src,X),
+    Output := cond((Inputs.size > 0 && fold(*,1,Inputs.values) == 1), 0, 1),
+    Activated = len([0 : 1 in Inputs.values]),
+    if Activated > 1 && Dest == "gf" then
+      printf("iter %d conj %s inputs: %w\n", Iter, Dest, Activated),
+    end,
+    % if Output == 0 then
+    %   printf("conj fired a 0: %s\n", Dest),
+    % end,
+    Changed = Changes.get(Dest, 0) + cond(Output == 0, 1, 0),
+    % if Changed > 0 && Dest == "sp" then
+    %   printf("Found %s on iteration %d\n", Dest, Changed),
+    %   exit()
+    % end,
+    Changes.put(Dest, Changed),
+    if membchk(Dest, ["sv","sp","pg","qs"]) && Output == 1 then
+      %printf("%s triggered at iter %d step %d\n", Dest, Iter, Step),
+      Step_key = "_"++Dest,
+      Changes.put(Step_key, [{Iter,Step}|Changes.get(Step_key, [])])
+    end,
+    %println(conj_output=Output)
+  elseif Type == flip then
+    if X == 0 then
+      New_state = 1 - State,
+      Output := New_state,
+      Changed = Changes.get(Dest, 0) + (1 - Output),
+      Changes.put(Dest, Changed),
+      M.put(Dest, {Type, Inputs, Dests, New_state})
+    end
+  else
+    Output := X
+  end,
+
+  if Output != none then
+    foreach (D in Dests)
+      Pulses := [{Dest,D,Output} | Pulses],
+      % if D == "sk" then
+      %   printf("wtf: %s pulse %w, output %w to %w: %w\n", Dest, X, Output, D, Pulses)
+      % end,
+    end,
+    Pulses := Pulses.reverse,
+    Q2 = Q ++ Pulses,
+    %println(queue=Q2),
+    R = process(Q2, M, Changes, Step+1, Iter)
+  else
+    R = process(Q, M, Changes, Step+1, Iter)
+  end.
+
+print_state(M) =>
+  foreach (K=V in M)
+    {Type, Inputs, Dests, State} = V,
+    if Type == flip then
+      printf("%s = %w\n", K, State)
+    end
+  end.
+    
+connect_inputs(M) =>
+  foreach (Src=V in M)
+    {_, _, Dests, 0} = V,
+    foreach (D in Dests)
+      if not(M.has_key(D)) then
+        printf("Untyped destination module: %s\n", D)
+      else
+        {Type, Inputs, Dests2, 0} = M.get(D),
+        Inputs.put(Src, 0),
+        M.put(D, {Type, Inputs, Dests2, 0})
+      end
+    end
+  end.
+
+parse_all(Lines,M) =>
+  foreach (L in Lines)
+    parse_line(L,M)
+  end,
+  M.put("button", {none, new_map(), ["broadcaster"], 0}).
+
+parse_line(S,M) =>
+  Ns = S.split(" ").map(strip),
+  [Src_spec,"->"|Dests_spec] = Ns,
+  Dests = [[C : C in Dest, C != ','] : Dest in Dests_spec],
+  {Src,Src_type} = get_source_type(Src_spec),
+  println(src=Src),
+  println(dests=Dests),
+  M.put(Src, {Src_type, new_map(), Dests, 0}).
+
+get_source_type(['%'|Src]) = {Src,flip}.
+get_source_type(['&'|Src]) = {Src,conjunction}.
+get_source_type(Src) = {Src,none}.

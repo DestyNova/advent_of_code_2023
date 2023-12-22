@@ -1,0 +1,161 @@
+import util.
+import cp.
+
+% flip-flop = %, low = toggle on/off + send hi/lo pulse, high = ignore
+% conjunction = &, remember latest pulse from each connect module. if all high, send lo else hi
+% broadcaster, copy incoming pulse to all connected dests
+% button, send lo to broadcaster, must wait until processing stopped
+% pulses processed in sending order => Q
+% inv is conjunction that's really a not
+
+main =>
+  M = new_map(),
+  parse_all(read_file_lines(),M),
+  %println(M),
+  connect_inputs(M),
+
+% % broadcaster -> a
+% %a -> inv, con
+% &inv -> b
+% %b -> con
+% &con -> output
+
+% button -> a
+% b = not(a)
+% con = nand(a,not(a))
+
+  % 1. find set S of flipflop values such that some known state is reached
+  % 2. find relationship between button presses N and flipflop values F...
+  % 3. determine min N that can cause flipflop values S
+
+  %println(rx=M.get("rx")),
+  Nodes = new_map([Node=I : {Node,I} in zip(M.keys,1..M.keys.len)]),
+  N = Nodes.size,
+  println(nodes=N),
+  Dests = new_array(N, N),
+  foreach (J in 1..N, I in 1..N)
+    Dests[J,I] = 0
+  end,
+  Types = new_array(N),
+  Input_lengths = new_array(N),
+  Input_lengths :: 0..N,
+
+  foreach (Node=V in M)
+    I = Nodes.get(Node),
+    {Type, Node_ins, Node_outs, 0} = V,
+    Types[I] = get_source_key(Type),
+    Input_lengths[I] = Node_ins.len,
+    foreach (Dest in Node_outs)
+      Dests[I, Nodes.get(Dest)] := 1,
+    end
+  end,
+
+  Time = 64, % assume max of 64 "ticks" to process a button press
+  Inputs = new_array(N, N, Time),
+  Inputs :: 0..1,
+  Button = Nodes.get("button"),
+  Broadcaster = Nodes.get("broadcaster"),
+  foreach (Src in 1..N, Dest in 1..N)
+    Inputs[Src,Dest,1] #= cond((Src #= Button #/\ Dest #= Broadcaster), 1, 0)
+  end,
+
+  Pulses = new_array(N, Time),
+  Pulses :: -1..1, % -1 = no pulse, 0 = low, 1 = high
+  foreach (I in 1..N)
+    Pulses[1, I] = cond(I == Nodes.get("broadcaster"), 0, -1)
+  end,
+
+  Flipflops = new_array(N, Time),
+  Flipflops :: 0..1,
+
+  % process
+  foreach (T in 1..Time-1)
+    Next_pulses = new_array(N),
+    foreach (Node in 1..N)
+      %println(node=Node),
+      Type = Types[Node],
+      %println(type=Type),
+      Triggered #= Pulses[Node, T],
+      % conjunctions
+      Anded = new_array(N),
+      foreach (Src in 1..N)
+        Anded[Src] #= Inputs[Src, Node, T]
+      end,
+      Key_conjunction = get_source_key(conjunction),
+      Type #= Key_conjunction #/\ sum(Anded) #= Input_lengths[Node] #=> Invert_conjunction,
+      % flipflops
+      Key_flip = get_source_key(flip),
+      Type #= Key_flip #/\ Triggered #= 0 #<=> Invert_flipflop,
+      Flipflop #= Flipflops[Node, T],
+      %Invert_flipflop #=> Flipflops[Node, T] #= Flipped_state,
+      Output #= cond(Triggered #> -1,
+        cond(Invert_conjunction,
+          1 - Triggered,
+          cond(Invert_flipflop, 1-Flipflop, Triggered)),
+        -1),
+      Flipflops[Node, T+1] #= cond(Invert_flipflop, 1-Flipflop, Flipflops[Node, T]),
+
+      foreach (Dest in 1..N)
+        %printf("Inputs: %w, dests: %w, dest: %w\n", Inputs[Node,Dest].len, Dests[Node].len, Dest),
+        %println({Type,Pulses[Dest,T+1],Output,Node,Dest}),
+        Dests[Node,Dest] #> 0 #/\ Output #> -1 #=> Pulses[Dest,T+1] #= Output,
+        %println(k),
+        Type #= Key_conjuncation #=> Inputs[Node,Dest,T+1] #= cond(Dests[Node,Dest] #> 0, Output, Inputs[Node,Dest,T]),
+        %println(y),
+      end,
+      %println(kk),
+    end,
+  end,
+
+  println(solving),
+  Solved = new_array(Time),
+  Solved :: 0..1,
+  %Solved[1] #= 0,
+  %println(solved=Solved),
+  foreach (T in 1..Time)
+    Solved[T] #= 1 - Pulses[Nodes.get("output"),T]
+  end,
+  Rx_triggered #= sum(Solved),
+  Rx_triggered #> 0,
+  %println(solved=Solved),
+  solve([],[Solved]),
+  println(Inputs).
+  %solve([],[Rx_triggered]),
+  %println([Rx_triggered,Flipflops[1]]).
+
+connect_inputs(M) =>
+  foreach (Src=V in M)
+    {_, _, Dests, 0} = V,
+    foreach (D in Dests)
+      if not(M.has_key(D)) then
+        printf("Untyped destination module: %s, adding dummy entry\n", D),
+        M.put(D, {none, Src, [], 0})
+      else
+        {Type, Inputs, Dests2, 0} = M.get(D),
+        Inputs.put(Src, 0),
+        M.put(D, {Type, Inputs, Dests2, 0})
+      end
+    end
+  end.
+
+parse_all(Lines,M) =>
+  foreach (L in Lines)
+    parse_line(L,M)
+  end,
+  M.put("button", {none, new_map(), ["broadcaster"], 0}).
+
+parse_line(S,M) =>
+  Ns = S.split(" ").map(strip),
+  [Src_spec,"->"|Dests_spec] = Ns,
+  Dests = [[C : C in Dest, C != ','] : Dest in Dests_spec],
+  {Src,Src_type} = get_source_type(Src_spec),
+  println(src=Src),
+  println(dests=Dests),
+  M.put(Src, {Src_type, new_map(), Dests, 0}).
+
+get_source_key(none) = 1.
+get_source_key(flip) = 2.
+get_source_key(conjunction) = 3.
+get_source_type(['%'|Src]) = {Src,flip}.
+get_source_type(['&'|Src]) = {Src,conjunction}.
+get_source_type(Src) = {Src,none}.
