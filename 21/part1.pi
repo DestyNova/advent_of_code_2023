@@ -21,8 +21,8 @@ main =>
   % 42 evens, 39 odds (sample)
   % 7566 evens, 7509 odds
   % sample2, 100 steps: 8699, 101 steps: 8960
-  Sample = [{65,3787},{196,33976},{327,94315}], % testing
-  bfs(G, MinX, MaxX, MinY, MaxY, Seen, [{X0,Y0,196}]),
+  Sample = [{65,3787},{196,33976},{327,94315}], % 64
+  bfs(G, MinX, MaxX, MinY, MaxY, Seen, [{X0,Y0,458}]),
   println(wat),
   %printG(G),
   println(get_global_map(g1).get(count)).
