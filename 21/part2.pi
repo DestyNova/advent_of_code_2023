@@ -1,5 +1,5 @@
 import util.
-import smt.
+import sat.
 
 % This doesn't work properly -- in the end I manually multiplied out the grid 9x in each axis,
 % then used the part 1 solution to get the counts for (N*2-1)*131//2 for N in 1..3 steps, after
@@ -35,6 +35,7 @@ main =>
   printf("Regressed A: %d, B: %d, C: %d, Divisor: %d\n", A, B, C, Divisor),
   N = Total_steps,
   Prediction = (A*N*N + B*N + C) // Divisor,
+  % NOTE: use %w!!! %d will output the wrong result if the result is a bignum!
   printf("Prediction for N=%w: %w\n", N, Prediction).
   % println(count_reachable(G,W,X0,Y0,Offset,Explored,Explore_steps,Total_steps)).
 
