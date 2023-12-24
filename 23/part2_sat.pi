@@ -1,35 +1,28 @@
-import planner.
-import ordset.
-import util.
 import sat.
 
 main =>
   Grid = read_file_lines(),
   {W,H} = {Grid[1].len, Grid.len},
-  get_global_map(g1).put(dims,{W,H}),
-  get_global_map(g1).put(grid,Grid),
-
-  S0 = {2,1,[{2,1}]},
-  {Vs,Es} = to_graph(Grid),
+  {Vs,Es} = to_graph(Grid,W,H),
   Cost = search(Vs.keys,Es.keys,{2,1},{W-1,H}),
-  writeln(Cost).
+  println(Cost).
 
 search(Vs,Es,Src,Dest) = Cost =>
   path_d(Vs,Es,Src,Dest),
   Counts = new_array(Es.len),
   Counts :: 0..1,
   foreach (I in 1..Es.len)
-    {_,_,B} = Es[I],
+    {From,To,B} = Es[I],
+    member({To,From,B2}, Es),
+    B #= 1 #=> B2 #= 0,
     Counts[I] #= B
   end,
   S #= sum(Counts),
-  S :: 0..2**20,
+  S :: 0..len(Es),
   solve([seq,$max(S),$report(printf("Best so far: %d\n",S))],[S,Vs,Es]),
   Cost = S.
 
-to_graph(Grid) = Graph =>
-  {W,H} = get_global_map(g1).get(dims),
-  Grid = get_global_map(g1).get(grid),
+to_graph(Grid,W,H) = Graph =>
   Actions = [north,east,south,west],
 
   Vs = new_set(),
@@ -39,7 +32,6 @@ to_graph(Grid) = Graph =>
     foreach (I in 1..W)
       Cell = Grid[J,I],
       if Cell != '#' then
-        %B :: 0..1,
         Vs.put({{I,J}, _}),
 
         foreach (Action in Actions)
@@ -47,7 +39,6 @@ to_graph(Grid) = Graph =>
           if (I2 >= 1, I2 <= W, J2 >= 1, J2 <= H) then
             Target = Grid[J2,I2],
             if (Target != '#') then
-              %B :: 0..1,
               Es.put({{I,J},{I2,J2},_}),
             end
           end
@@ -55,7 +46,7 @@ to_graph(Grid) = Graph =>
       end
     end
   end,
-  println(vs=Vs),
+  println(sizes={Vs.size,Es.size}),
   Graph = {Vs,Es}.
 
 inc(X,Y,north) = {X,Y-1}.

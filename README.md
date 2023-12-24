@@ -16,15 +16,15 @@ My solutions for the [Advent of Code 2023](https://adventofcode.com/2023/) progr
 ───────────────────────────────────────────────────────────────────────────────
 Language                     Files       Lines     Blanks    Comments      Code
 ───────────────────────────────────────────────────────────────────────────────
-Picat                           60        3268        453         241      2574
-Markdown                        20         835        279           0       556
+Picat                           71        4208        574         308      3326
+Markdown                        21         917        307           0       610
 Plain Text                       4          95         14           0        81
-Nim                              1         117         24           0        93
+Nim                              3         262         59           4       199
 gitignore                        1           6          0           0         6
 ───────────────────────────────────────────────────────────────────────────────
-Total                           86        4321        770         241      3310
+Total                          100        5488        954         312      4222
 ───────────────────────────────────────────────────────────────────────────────
-Processed 150796 bytes, 0.151 megabytes (SI)
+Processed 184649 bytes, 0.185 megabytes (SI)
 ───────────────────────────────────────────────────────────────────────────────
 ```
 
@@ -52,6 +52,6 @@ Processed 150796 bytes, 0.151 megabytes (SI)
 * Day 20: [Pulse Propagation](https://github.com/DestyNova/advent_of_code_2023/blob/main/20)
 * Day 21: [Step Counter](https://github.com/DestyNova/advent_of_code_2023/blob/main/21)
 * Day 22: [Sand Slabs](https://github.com/DestyNova/advent_of_code_2023/blob/main/22)
-* Day 23: [???](https://github.com/DestyNova/advent_of_code_2023/blob/main/23)
+* Day 23: [A Long Walk](https://github.com/DestyNova/advent_of_code_2023/blob/main/23)
 * Day 24: [Never Tell Me The Odds](https://github.com/DestyNova/advent_of_code_2023/blob/main/24)
 * Day 25: [???](https://github.com/DestyNova/advent_of_code_2023/blob/main/25)

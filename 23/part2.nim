@@ -1,4 +1,4 @@
-import std/[strformat, strutils, sets]
+import std/[strformat, strutils]
 
 type Vertex = (int,int)
 
@@ -18,7 +18,6 @@ proc getNeighbours(v: Vertex): seq[(Vertex)] =
     let
       (x2,y2) = (x+i,y+j)
 
-    #echo fmt"{x}<{w}, {y}<{h} = {g[y2][x2]}, seen"
     if 0<=x2 and x2<w and 0<y2 and y2<=h and not seen[y2][x2] and g[y2][x2] != '#':
       vs.add((x2,y2))
 
@@ -55,7 +54,6 @@ proc dfs(v: Vertex, depth: int): int =
 
   return res
 
-var i: int = 0
 for line in stdin.lines:
   w = len(line)
   h += 1
@@ -63,8 +61,4 @@ for line in stdin.lines:
   seen.add(newSeq[bool](w))
 
 echo fmt"w: {w}, h: {h}"
-echo g
-let
-  start: Vertex = (1,0)
-echo fmt"neighbours of start node: {getNeighbours(start)}"
-echo dfs(start,0)
+echo dfs((1,0),0)

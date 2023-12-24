@@ -51,6 +51,23 @@ Finally a day where it was immediately obvious and straightforward to solve a ve
 
 Then it occurred to me we don't need to solve the collision times for all 300 hailstones -- only 3 or 4 should be enough to fix the correct trajectory for the rock. After making this change, the program produced the correct answer in around 12 seconds.
 
+One thing I've noticed with SAT solvers is that a seemingly small change can have drastic changes on performance. For example, trying to solve based on the first 3 lines instead of 4 causes the program to take at least a minute (I killed it rather than wait to see if it completes, so maybe it made the problem unsolvable). And inlining these expressions:
+
+```picat
+    X #= Px + Vx*T,
+    Cx #= Sx + Svx*T,
+    X #= Cx,
+```
+
+to this:
+
+```picat
+    Px + Vx*T #= Sx + Svx*T,
+```
+
+...seemed like a perfectly equivalent expression that should produce the exact same timings and result, but again makes the program at least 10 times slower. It's very hard to predict how your changes will affect performance, but one rule of thumb seems to be that it's better to break up an expression into several separate assertions and then combine them, than to build complex expressions that mean the same thing.
+Also, I found myself running 3 different versions of the program in parallel so I could test changes more quickly: [tmux](https://github.com/tmux/tmux/wiki) and companion [tmuxinator](https://github.com/tmuxinator/tmuxinator) are really useful here.
+
 ## Timings (with hyperfine)
 
 ### Part 1
