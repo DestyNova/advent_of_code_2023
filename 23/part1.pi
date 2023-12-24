@@ -1,0 +1,50 @@
+import planner.
+import ordset.
+import util.
+
+main =>
+  Grid = read_file_lines(),
+  get_global_map(g1).put(dims,{Grid[1].len, Grid.len}),
+  get_global_map(g1).put(grid,Grid),
+
+  garbage_collect(4000000000),
+  S0 = {2,1,[{2,1}]},
+  best_plan_unbounded(S0,Plan,Cost),
+  writeln(Plan),
+  writeln(Cost).
+
+table % needed to avoid rapidly filling all available RAM and taking ages, ironically (use memory to save memory)
+action(S, S1, Action, Cost) ?=>
+  {W,H} = get_global_map(g1).get(dims),
+  Grid = get_global_map(g1).get(grid),
+  {I,J,Seen} = S,
+
+  member(Action, [north,east,south,west]),
+  {I2, J2} = inc(I,J,Action),
+  I2 >= 1, I2 <= W,
+  J2 >= 1, J2 <= H,
+  Target = Grid[J2,I2],
+  Target != '#',
+  not(I2 < I && Target == '>'),
+  not(I2 > I && Target == '<'),
+  not(J2 < J && Target == '>'),
+  not(J2 > J && Target == '>'),
+
+  not(Target == '>' && Action != east),
+  not(Target == 'v' && Action != south),
+  not(Target == '<' && Action != west),
+  not(Target == '^' && Action != north),
+  not(membchk({I2,J2},Seen)),
+  S1 = {I2, J2, Seen.insert({I2,J2})},
+  Cost = -1.
+
+% heuristic({I,J,_,_}) = R =>
+%   {W,H} = get_global_map(g1).get(dims),
+%   R = (H - J) + (W - I).
+
+final({I,J,_}) => {I+1,J} = get_global_map(g1).get(dims).
+
+inc(X,Y,north) = {X,Y-1}.
+inc(X,Y,east)  = {X+1,Y}.
+inc(X,Y,south) = {X,Y+1}.
+inc(X,Y,west)  = {X-1,Y}.

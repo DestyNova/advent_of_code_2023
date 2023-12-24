@@ -53,7 +53,7 @@ get_ancestor_counts(G) = Boom =>
   Boom = new_map(),
   foreach (K=V in G)
     % for each K, number of children whose only other supports are in my ancestors and children?
-    printf("get_ancestor_counts: k %w, ", K),
+    println(find_sole_supports=K),
     garbage_collect(500000000),
     My_ancestors = get_descendants(K, Ancestors),
     Descendants = get_descendants(K,G),
@@ -71,11 +71,11 @@ get_ancestor_counts(G) = Boom =>
         %println(parallel=Parallel_supports)
       end
     end,
-    println(k_count={K,Count}),
+    %println(k_count={K,Count}),
     Boom.put(K, Count)
   end.
 
-% 136,1143 ...
+table
 get_descendants(Node,G) = get_descendants_slow(Node,G).new_set().
 get_descendants_slow(Node,G) = R =>
   %println(node=Node),

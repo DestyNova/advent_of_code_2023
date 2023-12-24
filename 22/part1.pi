@@ -6,8 +6,6 @@ main =>
   parse_all(Blocks, Coords, read_file_lines()),
   println([Blocks, Coords]),
 
-  % 393 too low
-  % 876 too high, what the fuck
   I = 1,
   Falling = true,
   while (Falling)
@@ -48,7 +46,6 @@ get_pieces({C1,C2}) = [{X,Y,Z} : X in C1[1]..C2[1], Y in C1[2]..C2[2], Z in C1[3
 step(Blocks, Coords) = Moved =>
   Moved = 0,
   foreach (Id=Block in Blocks)
-    % printf("id: %d pos: %w\n", Id, Block),
     Pieces = get_pieces(Block),
 
     [] = [Piece : Piece in Pieces, Piece[3] < 1], % no piece should be below the ground

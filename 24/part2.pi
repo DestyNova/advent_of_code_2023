@@ -1,0 +1,50 @@
+import util.
+import sat.
+
+main =>
+  Data = read_file_lines().map(process),
+
+  S_p = [Sx,Sy,Sz],
+  S_v = [Svx,Svy,Svz],
+  S_p :: -2**50..2**50,
+  S_v :: -2**50..2**50,
+
+  Collision_times = new_array(4),
+  Collision_times :: 0..2**47,
+
+  foreach (I in 1..4)
+    T #= Collision_times[I],
+    {[Px,Py,Pz],[Vx,Vy,Vz]} = Data[I],
+
+    X #= Px + Vx*T,
+    Y #= Py + Vy*T,
+    Z #= Pz + Vz*T,
+
+    Cx #= Sx + Svx*T,
+    Cy #= Sy + Svy*T,
+    Cz #= Sz + Svz*T,
+
+    X #= Cx, Y #= Cy, Z #= Cz
+  end,
+
+  solve([], [S_p]),
+  println(sum(S_p)).
+
+get_intersection({A1,B1,C1},{A2,B2,C2}) = R =>
+  D1 = A1*B2-A2*B1,
+  D2 = A1*B2-A2*B1,
+  Fudge = 10000000000000000000000000000000,
+  R = cond((abs(D1)*Fudge < 1 || abs(D2)*Fudge < 1), {-2**63,-2**63}, {(B1*C2-B2*C1)/D1,(A2*C1-A1*C2)/D2}).
+
+get_line_equation({[Px,Py,Pz],[Vx,Vy,Vz]}) = R =>
+  M = Vy,
+  B_vx = Vx*Py - Vy*Px,
+  R = {M,-Vx,B_vx}.
+
+is_list([_|_]).
+
+process(S) = R =>
+  [Pos, Velocity] = S.split("@"),
+  P = Pos.split(", ").map(parse_term),
+  V = Velocity.split(", ").map(parse_term),
+  R = {P,V}.

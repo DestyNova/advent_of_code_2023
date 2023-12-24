@@ -1,0 +1,82 @@
+import planner.
+import ordset.
+import util.
+
+main =>
+  Grid = read_file_lines(),
+  Reduced = contract_edges(Grid),
+  get_global_map(g1).put(dims,{Grid[1].len, Grid.len}),
+  get_global_map(g1).put(grid,Grid),
+
+  S0 = {2,1,[{2,1}]},
+  %best_plan_unbounded(S0,Plan,Cost),
+  Cost = dfs(2,1,new_set([{2,1}]),1),
+  writeln(Plan),
+  writeln(Cost).
+
+contract_edges(G) = R =>
+
+dfs(I,J,Seen,Max) = R =>
+  if Max mod 200 == 0 then
+    println(Max),
+    garbage_collect(1000000000),
+  end,
+  {W,H} = get_global_map(g1).get(dims),
+  Grid = get_global_map(g1).get(grid),
+  Actions = [north,east,south,west],
+  R = 0,
+  foreach (Action in Actions)
+    {I2, J2} = inc(I,J,Action),
+    if (I2 >= 1, I2 <= W, J2 >= 1, J2 <= H) then
+      Target = Grid[J2,I2],
+      if final({I2,J2,tmp}) then
+        R := Max
+      elseif (Target != '#', not(Seen.has_key({I2,J2}))) then
+        Seen2 = copy_term(Seen),
+        Seen2.put({I2,J2}),
+        R2 = dfs(I2,J2,Seen2,Max+1),
+        if R2 > R then
+          printf("new possible max: %d\n", R2),
+          R := R
+        end
+      end
+    end
+  end.
+    
+bfs(G, _, _, _, _, Seen, []) => true.
+bfs(G, MinX, MaxX, MinY, MaxY, Seen, [{X,Y,Steps}|Xs]), Seen.has_key({X,Y}) =>
+  bfs(G, MinX, MaxX, MinY, MaxY, Seen, Xs).
+
+% flood fill from start node to every other node? or just junction nodes? or just the directly reachable ones?
+% what about from one junction to the next? not sure how to express this
+bfs(G, MinX, MaxX, MinY, MaxY, Seen, [{X,Y,Steps}|Xs]) =>
+  %println({X,Y,Steps}),
+  Seen.put({X,Y}),
+  Moves = moves(G, X, Y),
+  Xs2 = Xs ++ [{I,J,Steps-1} : Steps > 0, {I,J} in Moves, I >= MinX, I <= MaxX, J >= MinY, J <= MaxY, G[J,I] == '.'],
+  bfs(G, MinX, MaxX, MinY, MaxY, Seen, Xs2).
+
+moves(X, Y) = [{X+I,Y+J} : {I,J} in [{1,0},{0,1},{-1,0},{0,-1}].
+
+table % needed to avoid rapidly filling all available RAM and taking ages, ironically (use memory to save memory)
+action(S, S1, Action, Cost) ?=>
+  {W,H} = get_global_map(g1).get(dims),
+  Grid = get_global_map(g1).get(grid),
+  {I,J,Seen} = S,
+
+  member(Action, [north,east,south,west]),
+  {I2, J2} = inc(I,J,Action),
+  I2 >= 1, I2 <= W,
+  J2 >= 1, J2 <= H,
+  Target = Grid[J2,I2],
+  Target != '#',
+  not(membchk({I2,J2},Seen)),
+  S1 = {I2, J2, Seen.insert({I2,J2})},
+  Cost = -1.
+
+final({I,J,_}) => {I+1,J} = get_global_map(g1).get(dims).
+
+inc(X,Y,north) = {X,Y-1}.
+inc(X,Y,east)  = {X+1,Y}.
+inc(X,Y,south) = {X,Y+1}.
+inc(X,Y,west)  = {X-1,Y}.

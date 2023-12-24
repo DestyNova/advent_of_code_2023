@@ -1,0 +1,46 @@
+import util.
+
+main =>
+  Data = read_file_lines().map(process),
+
+  A = 200000000000000,
+  B = 400000000000000,
+  Count = 0,
+  foreach (U in 1..Data.len, V in U+1..Data.len)
+    L1 = Data[U],
+    L2 = Data[V],
+    E1 = get_line_equation(L1),
+    E2 = get_line_equation(L2),
+    {X,Y} = get_intersection(E1, E2),
+
+   if X >= A && X <= B && Y >= A && Y <= B then
+      {[X1,Y1,_],[I1,J1,_]} = L1,
+      {[X2,Y2,_],[I2,J2,_]} = L2,
+      if ((X1 >= X1+I1 && X1+1 >= X) || (X1 <= X1+I1 && X1+1 <= X)) &&
+         ((Y1 >= Y1+J1 && Y1+1 >= Y) || (Y1 <= Y1+J1 && Y1+1 <= Y)) &&
+         ((X2 >= X2+I2 && X2+2 >= X) || (X2 <= X2+I2 && X2+2 <= X)) &&
+         ((Y2 >= Y2+J2 && Y2+2 >= Y) || (Y2 <= Y2+J2 && Y2+2 <= Y)) then
+        Count := Count + 1
+      end
+    end
+  end,
+  println(Count).
+
+get_intersection({A1,B1,C1},{A2,B2,C2}) = R =>
+  D1 = A1*B2-A2*B1,
+  D2 = A1*B2-A2*B1,
+  Fudge = 10000000000000000000000000000000,
+  R = cond((abs(D1)*Fudge < 1 || abs(D2)*Fudge < 1), {-2**63,-2**63}, {(B1*C2-B2*C1)/D1,(A2*C1-A1*C2)/D2}).
+
+get_line_equation({[Px,Py,Pz],[Vx,Vy,Vz]}) = R =>
+  M = Vy,
+  B_vx = Vx*Py - Vy*Px,
+  R = {M,-Vx,B_vx}.
+
+is_list([_|_]).
+
+process(S) = R =>
+  [Pos, Velocity] = S.split("@"),
+  P = Pos.split(", ").map(parse_term),
+  V = Velocity.split(", ").map(parse_term),
+  R = {P,V}.
