@@ -9,10 +9,11 @@ $$y = mx + c$$
 
 and
 
-$$d_1 = a_1*b_2-a_2*b_1$$
-$$d_2 = a_1*b_2-a_2*b_1$$
+$$d_1 = {a_1}{b_2}-{a_2}{b_1}$$
 
-$$b_1*c_2-b_2*c_1)/d1,(a_2*c_1-a_1*c_2)/d2).
+$$d_2 = {a_1}{b_2}-{a_2}{b_1}$$
+
+$$(\frac {{b_1}{c_2}-{b_2}{c_1}} {d1}, \frac {{a_2}{c_1}-{a_1}{c_2}} {d2})$$
 
 It seemed inefficient to compare every pair of lines with each other ($$\frac {N*(N+1)} {2}$$, $$N=300 \implies 44850$$), but computers are pretty fast. Picat produced the right answer after 215 ms.
 
