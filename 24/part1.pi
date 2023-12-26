@@ -36,8 +36,6 @@ get_line_equation({[Px,Py,Pz],[Vx,Vy,Vz]}) = R =>
   B_vx = Vx*Py - Vy*Px,
   R = {M,-Vx,B_vx}.
 
-is_list([_|_]).
-
 process(S) = R =>
   [Pos, Velocity] = S.split("@"),
   P = Pos.split(", ").map(parse_term),
