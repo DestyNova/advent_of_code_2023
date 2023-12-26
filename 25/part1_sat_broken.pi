@@ -1,0 +1,137 @@
+import util.
+import ordset.
+import sat.
+
+main =>
+  G = new_map(),
+  _ = [process(Line,G) : Line in read_file_lines()],
+  Vs = [{V,_} : V in new_set(G.keys ++ fold(++,[],G.values)).keys],
+  println(vs_orig=Vs_orig),
+  println(vs=Vs),
+  println(vsl=Vs.len),
+  Es = get_edges(G).keys.drop_reverse_paths,
+  println(es=Es),
+
+  Vs2 = Vs.copy_term(),
+  Es2 = Es.copy_term(),
+
+  foreach ({From,To,_} in Es)
+    if not(member({To,From,_}, Es)) then
+      printf("one-sided membership: %w is missing\n", {To,From}),
+      % exit()
+    end,
+  end,
+
+  V_sz = Vs.len,
+  E_sz = Es.len(),
+  println(e_sz=E_sz),
+
+  In_graph = new_map(),
+  In_graph2 = new_map(),
+  Wires = new_array(E_sz),
+  Wires :: 0..1,
+  Wires2 = new_array(E_sz),
+  Wires2 :: 0..1,
+
+  foreach (I in 1..V_sz)
+    {V,B} = Vs[I],
+    {V2,B2} = Vs2[I],
+    V == V2,
+
+    B :: 0..1,
+    B2 :: 0..1,
+    B #!= B2,
+    In_graph.put(V,B),
+    In_graph2.put(V2,B2)
+  end,
+
+  foreach (I in 1..E_sz)
+    {From,To,B} = Es[I],
+    {From2,To2,B2} = Es2[I],
+    %member({To,From,B2}, Es), % if reverse edges were added
+    From == From2,
+    To == To2,
+
+    B :: 0..1,
+    B2 :: 0..1,
+    B #!= B2,
+
+    Wires[I] #= B,
+    Wires2[I] #= B2,
+    printf("wires[%d] from %w to %w = %w\n", I, From, To, B),
+    printf("wires[%d] from %w to %w = %w\n", I, From2, To2, B2),
+  end,
+
+  println(in_graph=In_graph),
+  println(in_graph2=In_graph2),
+  println(vs=Vs),
+  println(vs2=Vs2),
+  println(es=Es),
+  println(es2=Es2),
+  println(esz={Es.len}),
+  %print_dot(Vs,drop_reverse_paths(Es)),
+  scc(Vs,Es),
+  scc(Vs2,Es2),
+
+  Connected #= sum(Wires),
+  %Connected :: 1..E_sz-1,
+  Connected2 #= sum(Wires2),
+  %Connected2 :: 1..E_sz-1,
+  Connected + Connected2 #<= E_sz,
+
+  sum(In_graph.values) #= Subgraph_size,
+  %Subgraph_size :: 1..V_sz,
+  sum(In_graph2.values) #= Subgraph_size2,
+  %Subgraph_size2 :: 1..V_sz,
+  Subgraph_size + Subgraph_size2 #= V_sz,
+  % 1493 total nodes
+  println(in_g=In_graph),
+  println(in_g2=In_graph2),
+  solve([],[Wires,Wires2,Vs,Vs2,Es,Es2,Subgraph_size,Subgraph_size2,Connected,Connected2]),
+  println(sub_size=Subgraph_size),
+  println(sub_size2=Subgraph_size2),
+  println(wires=Wires),
+  println(wires2=Wires2),
+  println(sz=sum([B : {_,B} in Vs])),
+  println(sz0=Vs.len),
+  println(vs=Vs),
+  println(vs2=Vs2),
+  println(es=Es),
+  println(es_len2=Es.len),
+  println([{A,B} : {A,B,0} in Es]).
+
+drop_reverse_paths(Es) = R =>
+  R = [],
+  foreach ({U,V,B} in Es)
+    if not(member({V,U,_},R)) then
+      R := R.insert({U,V,B}),
+    end,
+  end.
+
+print_dot(Vs,Es) =>
+  println(Es.len),
+  println("DOT output *******************"),
+  nl,
+  foreach ({V,_} in Vs)
+    foreach ({V,To,_} in Es)
+      printf("%w -- %w;\n", V, To),
+    end,
+  end,
+  println("\nDOT output *******************").
+
+get_edges(G) = Edges =>
+  Edges = new_set(),
+  foreach (V=Conns in G)
+    foreach (U in Conns)
+      %print(edge={V,U}),
+      Edges.put({V,U,_}),
+      Edges.put({U,V,_})
+    end
+  end.
+
+process(Line,G) = R =>
+  [Name,Rest] = Line.split(":"),
+  Others = Rest.tail.split(" "),
+  printf("name: [%s], others: %w\n", Name, Others),
+  G.put(Name,Others),
+  R = 0.
