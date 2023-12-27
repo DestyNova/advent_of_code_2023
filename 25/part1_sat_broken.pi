@@ -77,7 +77,7 @@ main =>
   %Connected :: 1..E_sz-1,
   Connected2 #= sum(Wires2),
   %Connected2 :: 1..E_sz-1,
-  Connected + Connected2 #<= E_sz,
+  Connected + Connected2 + 6 #= E_sz,
 
   sum(In_graph.values) #= Subgraph_size,
   %Subgraph_size :: 1..V_sz,

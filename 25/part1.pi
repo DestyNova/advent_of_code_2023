@@ -30,7 +30,7 @@ main =>
   % max-flow min-cut
   Cut_size = Es.len,
   Step = 1,
-  while (Cut_size != 6)
+  while (Cut_size > 6)
     G2 = new_ordset([[V] : {V,_} in Vs]),
     E2 = [{U,V,I} : {{U,V},I} in zip(drop_reverse_paths(Es),1..len(Es))],
     %println(e2=E2),
@@ -80,7 +80,7 @@ main =>
     if E2.len < Cut_size then
       Cut_size := E2.len,
       printf("New min cut: %d\n",Cut_size),
-      println(G2[1].len)
+      println(G2[1].len * G2[2].len)
     end
   end.
 

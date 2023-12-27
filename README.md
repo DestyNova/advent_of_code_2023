@@ -16,15 +16,17 @@ My solutions for the [Advent of Code 2023](https://adventofcode.com/2023/) progr
 ───────────────────────────────────────────────────────────────────────────────
 Language                     Files       Lines     Blanks    Comments      Code
 ───────────────────────────────────────────────────────────────────────────────
-Picat                           71        4208        574         308      3326
-Markdown                        21         917        307           0       610
+Picat                           70        4246        571         331      3344
+Markdown                        23        1010        344           0       666
 Plain Text                       4          95         14           0        81
-Nim                              3         262         59           4       199
+Nim                              3         256         59           3       194
+DOT                              1          69          1           0        68
+Python                           1          18          4           0        14
 gitignore                        1           6          0           0         6
 ───────────────────────────────────────────────────────────────────────────────
-Total                          100        5488        954         312      4222
+Total                          103        5700        993         334      4373
 ───────────────────────────────────────────────────────────────────────────────
-Processed 184649 bytes, 0.185 megabytes (SI)
+Processed 198061 bytes, 0.198 megabytes (SI)
 ───────────────────────────────────────────────────────────────────────────────
 ```
 
@@ -54,4 +56,4 @@ Processed 184649 bytes, 0.185 megabytes (SI)
 * Day 22: [Sand Slabs](https://github.com/DestyNova/advent_of_code_2023/blob/main/22)
 * Day 23: [A Long Walk](https://github.com/DestyNova/advent_of_code_2023/blob/main/23)
 * Day 24: [Never Tell Me The Odds](https://github.com/DestyNova/advent_of_code_2023/blob/main/24)
-* Day 25: [???](https://github.com/DestyNova/advent_of_code_2023/blob/main/25)
+* Day 25: [Snowverload](https://github.com/DestyNova/advent_of_code_2023/blob/main/25)
