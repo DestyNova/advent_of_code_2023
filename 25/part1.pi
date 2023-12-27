@@ -5,35 +5,22 @@ import ordset.
 main =>
   G = new_map(),
   _ = [process(Line,G) : Line in read_file_lines()],
-  %println(g=G.get("cmg")),
   Vs = [{V,_} : V in new_set(G.keys ++ fold(++,[],G.values)).keys],
-  %Vs = [{V.hash_code(),B} : {V,B} in Vs_orig],
-  println(vs_orig=Vs_orig),
-  println(vs=Vs),
-  println(vsl=Vs.len),
-  %Es_orig = get_edges(G).keys,
   Es = get_edges(G).keys,
-  %Es = [{From.hash_code(),To.hash_code(),B} : {From,To,B} in Es_orig],
 
-  % println(es=Es_orig),
   foreach ({From,To,_} in Es)
     if not(member({To,From,_}, Es)) then
       printf("one-sided membership: %w is missing\n", {To,From}),
       exit()
     end,
   end,
-  % print_dot(Vs_orig,Es_orig)
 
   _ = random(random2()),
-  % Vs := [{N,_} : N in 1..5],
-  % Es := [{A,B,_} : {A,B} in [{1,2},{2,5},{2,3},{5,3},{3,4},{4,1}]],
-  % max-flow min-cut
   Cut_size = Es.len,
   Step = 1,
   while (Cut_size > 6)
     G2 = new_ordset([[V] : {V,_} in Vs]),
     E2 = [{U,V,I} : {{U,V},I} in zip(drop_reverse_paths(Es),1..len(Es))],
-    %println(e2=E2),
     while (G2.len > 2)
       if Step mod 100 == 0 then
         garbage_collect(),
@@ -41,20 +28,12 @@ main =>
       end,
       Step := Step + 1,
       % pick edge at random
-      %println(g2len=G2.len),
       I = random(1,E2.len),
-      % contract edge (fuse vertices?)
       {U,V,Label} = E2[I],
-      %println(deleting={U,V,Label}),
       New_key = union(U,V),
-      %println(new_key=New_key),
       G2 := G2.delete(U).delete(V).insert(New_key),
-      %println(g2=G2),
-      % remove and replace edge? how to keep track of other edges?
       Update_to_U = findall({A,A_label}, (member({A,U,A_label},E2) || member({U,A,A_label},E2))),
-      %println(update_to_u=Update_to_U),
       Update_to_V = findall({A,A_label}, (member({A,V,A_label},E2) || member({V,A,A_label},E2))),
-      %println(update_to_v=Update_to_V),
       foreach ({A,_} in Update_to_U)
         E2 := E2.delete({A,U,_}).delete({U,A,_})
       end,
@@ -62,20 +41,13 @@ main =>
         E2 := E2.delete({A,V,_}).delete({V,A,_})
       end,
       E2 := E2.delete({U,V,_}).delete({V,U,_}), % delete collapsed edge
-      %if not(subset(A,New_key)) then
       E2 := E2.union(new_ordset([{A,New_key,A_label} : {A,A_label} in Update_to_U])),
       E2 := E2.union(new_ordset([{A,New_key,A_label} : {A,A_label} in Update_to_V])),
-      %end,
       foreach ({A,B,_} in E2)
         if subset(A,B) then
-          %println(self={A,B}),
           E2 := E2.delete({A,B,_})
         end
       end,
-      % println(e2=E2),
-      % println(e2l=E2.len),
-      % delete self-loops
-      %exit()
     end,
     if E2.len < Cut_size then
       Cut_size := E2.len,
@@ -92,8 +64,6 @@ drop_reverse_paths(Es) = R =>
     end,
   end.
  
-  % delete remaining edges from original graph
-  % DFS to count size of island
 print_dot(Vs,Es) =>
   println(Es.len),
   nl,
@@ -108,7 +78,6 @@ get_edges(G) = Edges =>
   Edges = new_set(),
   foreach (V=Conns in G)
     foreach (U in Conns)
-      %print(edge={V,U}),
       Edges.put({V,U,_}),
       Edges.put({U,V,_})
     end
@@ -117,7 +86,5 @@ get_edges(G) = Edges =>
 process(Line,G) = R =>
   [Name,Rest] = Line.split(":"),
   Others = Rest.tail.split(" "),
-  printf("name: [%s], others: %w\n", Name, Others),
-  %G.put(Name.hash_code(),Others.map(hash_code)),
   G.put(Name,Others),
   R = 0.
